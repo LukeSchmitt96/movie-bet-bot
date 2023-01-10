@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import List, Set
 
+from bs4 import BeautifulSoup
+
 from movie_bet_bot.utils import fetch_page_body_from_url, map_place
 from movie_bet_bot.utils.constants import LB_ROOT
 
@@ -22,21 +24,33 @@ class Film:
     def __repr__(self) -> str:
         return f"Film(title='{self.title}',url='{self.url}')"
 
+    def __eq__(self, __o: Film) -> bool:
+        return self.url == __o.url
+
 class FilmList:
     url: str
-    films: Set[Film]
+    films: list[Film]
 
-    def __init__(self, url: str, films: Set[Film] = set()) -> None:
+    def __init__(self, url: str, films: list[Film] = list()) -> None:
         self.url = url
         self.films = films
 
     @staticmethod
-    async def from_url(url: str):
-        films: Set[Film] = set()
+    async def from_url(url: str) -> list[Film]:
+        films: list[Film] = list()
         page = await fetch_page_body_from_url(url)
         list_result = page.find_all('li', class_=FILM_CLASS_NAME)
         for li in list_result:
-            films.add(Film(li.a.text, LB_ROOT + li.a['href']))
+            films.append(Film(li.a.text, LB_ROOT + li.a['href']))
+        return films
+
+    @staticmethod
+    def from_html_string(html: str) -> list[Film]:
+        html_soup = BeautifulSoup(html, 'html.parser')
+        films: list[Film] = list()
+        list_result = html_soup.find_all('li', class_=FILM_CLASS_NAME)
+        for li in list_result:
+            films.append(Film(li.a.text, LB_ROOT + li.a['href']))
         return films
 
     def __repr__(self) -> str:
@@ -45,6 +59,11 @@ class FilmList:
     def __len__(self) -> int:
         return len(self.films)
 
+    def __eq__(self, __o: FilmList) -> bool:
+        return set([film.title for film in self.films]) == set([film.title for film in __o.films])
+
+    def __ne__(self, __o: FilmList) -> bool:
+        return set([film.title for film in self.films]) != set([film.title for film in __o.films])
 
 class Member:
     contest_url: str
