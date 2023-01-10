@@ -2,3 +2,4 @@
 run.sh
 __pycache__/
 movie_bot_conf.yaml
+.pytest_cache
