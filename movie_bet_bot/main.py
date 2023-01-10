@@ -13,8 +13,9 @@ conf: Dict = None
 def main():
     with open('./movie_bot_conf.yaml') as conf_file:
         conf = parse_config(yaml.safe_load(conf_file))
-    contests = Contest.from_config(conf['contest_config'])
-    bot = MovieBetBot(contest=contests[1])
+    bot = MovieBetBot(
+        contest=Contest.from_config(conf['contest_config'])[0]
+    )
     bot.run()
 
 if __name__ == '__main__':
