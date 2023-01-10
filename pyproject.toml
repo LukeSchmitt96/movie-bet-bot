@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "movie-bet-bot"
+version = "0.1.0"
+description = "Discord bot that tracks multiple Letterboxd lists and periodically updates a channel with their status."
+authors = ["Luke Schmitt <luke@lukeschmitt.me>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "movie_bet_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+"discord.py" = "^2.1.0"
+python-dotenv = "^0.21.0"
+beautifulsoup4 = "^4.11.1"
+pyyaml = "^6.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

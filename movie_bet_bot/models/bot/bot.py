@@ -1,0 +1,45 @@
+import os
+from typing import Any
+
+import discord
+from discord.ext import tasks
+
+from movie_bet_bot.models.movies import Contest
+
+TOKEN: str = os.getenv('DISCORD_TOKEN')
+CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
+GUILD_ID = int(os.getenv('DISCORD_GUILD_ID'))
+
+class MovieBetBot(discord.Client):
+
+    contest: Contest
+    guild: discord.Guild
+    channel: discord.Thread
+
+    def __init__(
+        self,
+        contest: Contest,
+        **options: Any
+    ) -> None:
+        super().__init__(
+            intents=discord.Intents.default(),
+            **options
+        )
+        self.contest = contest
+
+    async def on_ready(self):
+        print(f'Logged in as {self.user}')
+        self.guild = self.get_guild(GUILD_ID)
+        self.channel = self.guild.get_channel_or_thread(CHANNEL_ID)
+        self.contest_message_task.start()
+
+    async def send_message(self, msg: str):
+        await self.channel.send(msg)
+
+    @tasks.loop(minutes=120.0)
+    async def contest_message_task(self) -> None:
+        await self.contest.run_contest()
+        await self.send_message(self.contest.print_contest())
+
+    def run(self):
+        super().run(TOKEN)
