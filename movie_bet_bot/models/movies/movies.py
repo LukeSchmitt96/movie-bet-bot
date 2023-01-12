@@ -11,6 +11,7 @@ from movie_bet_bot.utils.constants import LB_ROOT
 LIST_CLASS_NAME = 'poster-list'
 FILM_CLASS_NAME = 'film-detail'
 
+
 class Film:
     title: str
     url: str
@@ -27,17 +28,18 @@ class Film:
     def __eq__(self, __o: Film) -> bool:
         return self.url == __o.url
 
+
 class FilmList:
     url: str
-    films: list[Film]
+    films: List[Film]
 
-    def __init__(self, url: str, films: list[Film] = list()) -> None:
+    def __init__(self, url: str, films: List[Film] = list()) -> None:
         self.url = url
         self.films = films
 
     @staticmethod
-    async def from_url(url: str) -> list[Film]:
-        films: list[Film] = list()
+    async def from_url(url: str) -> List[Film]:
+        films: List[Film] = list()
         page = await fetch_page_body_from_url(url)
         list_result = page.find_all('li', class_=FILM_CLASS_NAME)
         for li in list_result:
@@ -45,9 +47,9 @@ class FilmList:
         return films
 
     @staticmethod
-    def from_html_string(html: str) -> list[Film]:
+    def from_html_string(html: str) -> List[Film]:
         html_soup = BeautifulSoup(html, 'html.parser')
-        films: list[Film] = list()
+        films: List[Film] = list()
         list_result = html_soup.find_all('li', class_=FILM_CLASS_NAME)
         for li in list_result:
             films.append(Film(li.a.text, LB_ROOT + li.a['href']))
@@ -64,6 +66,7 @@ class FilmList:
 
     def __ne__(self, __o: FilmList) -> bool:
         return set([film.title for film in self.films]) != set([film.title for film in __o.films])
+
 
 class Member:
     contest_url: str
@@ -82,6 +85,7 @@ class Member:
 
     def __repr__(self) -> str:
         return f"Member(name={self.name},list={self.list})"
+
 
 class Contest:
     name: str
