@@ -88,7 +88,7 @@ class Member:
         self.contest_url = contest_url
         self.profile_url = profile_url
 
-    def get_number_of_films_watched(self) -> int:
+    def num_films_watched(self) -> int:
         return len(self.list)
 
     def __repr__(self) -> str:
@@ -126,7 +126,7 @@ class Contest:
             )
         return contests
 
-    async def run_contest(self) -> bool:
+    async def update(self) -> bool:
         is_changed = False
         for member in self.members:
             member_last = copy.deepcopy(member)
@@ -134,25 +134,25 @@ class Contest:
             if member == member_last:
                 is_changed = True
         self.members.sort(
-            key=lambda x: x.get_number_of_films_watched(),
+            key=lambda x: x.num_films_watched(),
             reverse=True
         )
         return is_changed
 
-    def print_contest(self) -> str:
+    def print_standings(self) -> str:
         now = datetime.now()
         dt_string = now.strftime("%m/%d %H:%M")
         out_string = f'Standings as of {dt_string}:\n'
         place = 1
         last_member_films_watched = -1
         for member in self.members:
-            if (member.get_number_of_films_watched() < last_member_films_watched):
+            if (member.num_films_watched() < last_member_films_watched):
                 place += 1
-            last_member_films_watched = member.get_number_of_films_watched()
+            last_member_films_watched = member.num_films_watched()
             out_string += (
                 f'* {map_place(place)} '
                 f'{member.name}: '
-                f'{member.get_number_of_films_watched()}'
+                f'{member.num_films_watched()}'
                 '\n'
             )
         print(out_string)
