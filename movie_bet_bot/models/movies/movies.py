@@ -70,6 +70,10 @@ class FilmList:
     def __ne__(self, __o: FilmList) -> bool:
         return set([film.title for film in self.films]) != set([film.title for film in __o.films])
 
+    def __sub__(self, __o: FilmList) -> List[Film]:
+        diff = set([(f.title, f.url) for f in self.films]) - set([(f.title, f.url) for f in __o.films])
+        return [Film(f[0], f[1]) for f in diff]
+
 
 class Member:
     contest_url: str
