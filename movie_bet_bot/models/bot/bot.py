@@ -41,7 +41,7 @@ class MovieBetBot(discord.Client):
     async def send_message(self, msg: str):
         await self.channel.send(msg)
 
-    @tasks.loop(minutes=120.0)
+    @tasks.loop(minutes=720.0)  # TODO: set this from config
     async def contest_message_task(self) -> None:
         await self.contest.run_contest()
         await self.send_message(self.contest.print_contest())
