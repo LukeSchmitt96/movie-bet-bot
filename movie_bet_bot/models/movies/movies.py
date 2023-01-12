@@ -26,33 +26,36 @@ class Film:
         return f"Film(title='{self.title}',url='{self.url}')"
 
     def __eq__(self, __o: Film) -> bool:
-        return self.url == __o.url
+        return self.title == __o.title and self.url == __o.url
+
+    def __hash__(self):
+        return hash(tuple((self.title, self.url)))
 
 
 class FilmList:
     url: str
-    films: List[Film]
+    films: Set[Film]
 
-    def __init__(self, url: str, films: List[Film] = list()) -> None:
+    def __init__(self, url: str, films: Set[Film] = set()) -> None:
         self.url = url
         self.films = films
 
     @staticmethod
-    async def from_url(url: str) -> List[Film]:
-        films: List[Film] = list()
+    async def from_url(url: str) -> Set[Film]:
+        films: Set[Film] = set()
         page = await fetch_page_body_from_url(url)
         list_result = page.find_all('li', class_=FILM_CLASS_NAME)
         for li in list_result:
-            films.append(Film(li.a.text, LB_ROOT + li.a['href']))
+            films.add(Film(li.a.text, LB_ROOT + li.a['href']))
         return films
 
     @staticmethod
-    def from_html_string(html: str) -> List[Film]:
+    def from_html_string(html: str) -> Set[Film]:
         html_soup = BeautifulSoup(html, 'html.parser')
-        films: List[Film] = list()
+        films: Set[Film] = set()
         list_result = html_soup.find_all('li', class_=FILM_CLASS_NAME)
         for li in list_result:
-            films.append(Film(li.a.text, LB_ROOT + li.a['href']))
+            films.add(Film(li.a.text, LB_ROOT + li.a['href']))
         return films
 
     def __repr__(self) -> str:

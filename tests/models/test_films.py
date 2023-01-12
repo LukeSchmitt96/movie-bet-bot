@@ -24,4 +24,5 @@ class Test_FilmList:
 
     def test_from_html_string(self):
         flist = FilmList.from_html_string(PAGE)
-        assert(flist[0].title == 'Discord')
+        assert(len(flist) == 1)
+        assert('Discord' in [f.title for f in flist])
