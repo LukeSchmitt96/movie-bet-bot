@@ -1,4 +1,5 @@
 from __future__ import annotations
+import copy
 
 from datetime import datetime
 from typing import List, Set
@@ -64,11 +65,11 @@ class FilmList:
     def __len__(self) -> int:
         return len(self.films)
 
-    def __eq__(self, __o: FilmList) -> bool:
-        return set([film.title for film in self.films]) == set([film.title for film in __o.films])
+    def __hash__(self) -> int:
+        return hash(self.films)
 
-    def __ne__(self, __o: FilmList) -> bool:
-        return set([film.title for film in self.films]) != set([film.title for film in __o.films])
+    def __eq__(self, __o: FilmList) -> bool:
+        return self.url == __o.url and self.films == __o.films
 
     def __sub__(self, __o: FilmList) -> List[Film]:
         diff = set([(f.title, f.url) for f in self.films]) - set([(f.title, f.url) for f in __o.films])
@@ -92,6 +93,9 @@ class Member:
 
     def __repr__(self) -> str:
         return f"Member(name={self.name},list={self.list})"
+
+    def __hash__(self) -> int:
+        return hash((self.profile_url, self.list))
 
 
 class Contest:
@@ -122,14 +126,18 @@ class Contest:
             )
         return contests
 
-
-    async def run_contest(self):
+    async def run_contest(self) -> bool:
+        is_changed = False
         for member in self.members:
-            member.list = await FilmList.from_url(member.contest_url)
+            member_last = copy.deepcopy(member)
+            member.list = await FilmList.from_url(member_last.contest_url)
+            if member == member_last:
+                is_changed = True
         self.members.sort(
             key=lambda x: x.get_number_of_films_watched(),
             reverse=True
         )
+        return is_changed
 
     def print_contest(self) -> str:
         now = datetime.now()
@@ -147,4 +155,5 @@ class Contest:
                 f'{member.get_number_of_films_watched()}'
                 '\n'
             )
+        print(out_string)
         return out_string
