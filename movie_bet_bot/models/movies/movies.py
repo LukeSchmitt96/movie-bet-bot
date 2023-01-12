@@ -135,11 +135,16 @@ class Contest:
         now = datetime.now()
         dt_string = now.strftime("%m/%d %H:%M")
         out_string = f'Standings as of {dt_string}:\n'
-        for i in range(len(self.members)):
+        place = 1
+        last_member_films_watched = -1
+        for member in self.members:
+            if (member.get_number_of_films_watched() < last_member_films_watched):
+                place += 1
+            last_member_films_watched = member.get_number_of_films_watched()
             out_string += (
-                f'* {map_place(i+1)} '
-                f'{self.members[i].name}: '
-                f'{self.members[i].get_number_of_films_watched()}'
+                f'* {map_place(place)} '
+                f'{member.name}: '
+                f'{member.get_number_of_films_watched()}'
                 '\n'
             )
         return out_string
