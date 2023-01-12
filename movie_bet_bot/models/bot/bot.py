@@ -9,6 +9,8 @@ from movie_bet_bot.models.movies import Contest
 TOKEN: str = os.getenv('DISCORD_TOKEN')
 CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
 GUILD_ID = int(os.getenv('DISCORD_GUILD_ID'))
+INTENTS=discord.Intents.default()
+
 
 class MovieBetBot(discord.Client):
 
@@ -22,7 +24,7 @@ class MovieBetBot(discord.Client):
         **options: Any
     ) -> None:
         super().__init__(
-            intents=discord.Intents.default(),
+            intents = INTENTS,
             **options
         )
         self.contest = contest
