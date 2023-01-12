@@ -29,6 +29,9 @@ class MovieBetBot(discord.Client):
         )
         self.contest = contest
 
+    def run(self):
+        super().run(TOKEN)
+
     async def on_ready(self):
         print(f'Logged in as {self.user}')
         self.guild = self.get_guild(GUILD_ID)
@@ -42,6 +45,3 @@ class MovieBetBot(discord.Client):
     async def contest_message_task(self) -> None:
         await self.contest.run_contest()
         await self.send_message(self.contest.print_contest())
-
-    def run(self):
-        super().run(TOKEN)
