@@ -1,12 +1,11 @@
-from dataclasses import dataclass
-from typing import List, Set
-from yaml import Node
+from typing import Dict
+import yaml
 
-def parse_config(config: Node):
+def parse_config(config: Dict) -> Dict:
     contests = []
-    for contest in config['contests']:
+    for contest in config.get('contests'):
         members = []
-        for member in contest['members']:
+        for member in contest.get('members'):
             members.append(
                 {
                     'name': member['name'],
@@ -18,11 +17,13 @@ def parse_config(config: Node):
             {
                 'name': contest['name'],
                 'members': members,
+                'db_path': contest['db_path'],
             }
         )
-    return {
-        'bot_config': {
-            'interval_callback_duration': config['bot']['interval_callback_duration']
-        },
+    config = {
+        # 'bot_config': {
+        #     'interval_callback_duration': config['bot']['interval_callback_duration'],
+        # },
         'contest_config': contests,
     }
+    return config
