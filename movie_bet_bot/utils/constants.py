@@ -94,7 +94,7 @@ HTML_STANDINGS_TEMPLATE = """
         {head}
     </head>
     <body>
-        <p>Standings</p>
+        <p>Standings as of {time}</p>
         <div class="members">
             {members}
         </div>

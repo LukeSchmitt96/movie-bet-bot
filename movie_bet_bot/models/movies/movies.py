@@ -262,7 +262,8 @@ class Contest:
         return is_changed
 
     def update_standings(self) -> None:
-        self.standings_string = f'Standings as of {datetime.now().strftime("%m/%d %H:%M")}:\n'
+        self.time_last_update = datetime.now()
+        self.standings_string = f'Standings as of {self.time_last_update.strftime("%m/%d %H:%M")}:\n'
         place = 1
         last_member_films_watched = -1
         for member in self.members:
@@ -334,6 +335,7 @@ class Contest:
             html_height += 150
         html = HTML_STANDINGS_TEMPLATE.format(
             head=HTML_HEAD,
+            time=self.time_last_update.strftime("%m/%d %H:%M"),
             members=html_members,
             updates=html_updates,
         )
