@@ -130,7 +130,7 @@ class Member:
     profile_url: str
     name: str
     list: FilmList = FilmList('')
-    watchtime: int = -1
+    _watchtime: int = -1
     _num_films_since_last_update: int = 0
     _films_since_last_update: Set[Film] = []
     _place: int = -1
@@ -158,6 +158,10 @@ class Member:
     @property
     def num_films_watched(self) -> int:
         return len(self.list)
+
+    @property
+    def watchtime(self) -> int:
+        return sum([film.runtime for film in self.list.films])
 
     @property
     def num_films_since_last_update(self) -> int:
