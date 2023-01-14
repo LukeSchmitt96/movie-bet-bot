@@ -35,7 +35,7 @@ class Test_FilmList:
     def test_from_html_string(self):
         flist = FilmList.from_html_string(PAGE)
         assert(len(flist) == 1)
-        assert('Discord' in [f.title for f in flist])
+        assert('Discord' in [f.title for f in flist.films])
 
     def test_subtract(self):
         list1 = FilmList(
@@ -67,9 +67,13 @@ class Test_Member:
         member1.list.url='url1'
         member1.list.films.add((film1, film2))
         member1_updated = copy.deepcopy(member1)
+
         assert(member1.list == member1_updated.list)
+        assert(member1.num_films_watched == member1_updated.num_films_watched)
+
         member1_updated.list.films.add(film4)
-        assert(member1.list == member1_updated.list)
+        assert(member1.list != member1_updated.list)
+        assert(member1.num_films_watched != member1_updated.num_films_watched)
 
 
 class Test_Contest:
@@ -93,8 +97,8 @@ class Test_Contest:
         )
         assert(c.members[0].name == 'name1')
         assert(c.members[1].name == 'name2')
-        await c.update()
+        await c.update(get_film_details=False)
         assert(c.members[0].name == 'name2')
-        assert(c.members[0].num_films_watched() == 2)
+        assert(c.members[0].num_films_watched == 2)
         assert(c.members[1].name == 'name1')
-        assert(c.members[1].num_films_watched() == 1)
+        assert(c.members[1].num_films_watched == 1)
