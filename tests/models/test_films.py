@@ -97,7 +97,7 @@ class Test_Contest:
         )
         assert(c.members[0].name == 'name1')
         assert(c.members[1].name == 'name2')
-        await c.update(get_film_details=False)
+        await c.update(get_film_details=False, save_on_update=False)
         assert(c.members[0].name == 'name2')
         assert(c.members[0].num_films_watched == 2)
         assert(c.members[1].name == 'name1')

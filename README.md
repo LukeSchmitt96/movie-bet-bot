@@ -1,4 +1,4 @@
-# Movie Bet Bot
+# Movie Bet Bot [![CI](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/ci.yml)
 
 ## Installation
 
