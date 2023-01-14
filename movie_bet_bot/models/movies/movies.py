@@ -72,7 +72,7 @@ class FilmList:
         self.films = films
 
     @staticmethod
-    async def from_url(url: str) -> FilmList:
+    async def from_url(url: str, get_film_details: bool = True) -> FilmList:
         films: Set[Film] = set()
         list_page = await fetch_page_body_from_url(url)
         list_result = list_page.find_all('li', class_=FILM_CLASS_NAME)
@@ -80,12 +80,13 @@ class FilmList:
             film_title = li.a.text
             film_url = LB_URL_ROOT + li.a['href']
             film = Film(film_title, film_url)
-            search = tmdb.Search()
-            resp = search.movie(query=film_title)
-            if 'results' in resp:
-                film_info = tmdb.Movies(int(resp['results'][0]['id'])).info()
-                film.poster_url = POSTERPATH_URL_BASE + film_info['poster_path']
-                film.runtime = int(film_info['runtime'])
+            if get_film_details:
+                search = tmdb.Search()
+                resp = search.movie(query=film_title)
+                if 'results' in resp:
+                    film_info = tmdb.Movies(int(resp['results'][0]['id'])).info()
+                    film.poster_url = POSTERPATH_URL_BASE + film_info['poster_path']
+                    film.runtime = int(film_info['runtime'])
             films.add(film)
         return FilmList(url, films)
 
@@ -94,7 +95,7 @@ class FilmList:
         return [film.title for film in self.films]
 
     @staticmethod
-    def from_html_string(html: str) -> Set[Film]:
+    def from_html_string(html: str) -> FilmList:
         html_soup = BeautifulSoup(html, 'html.parser')
         films: Set[Film] = set()
         list_result = html_soup.find_all('li', class_=FILM_CLASS_NAME)
@@ -239,12 +240,15 @@ class Contest:
             )
         return contests
 
-    async def update(self) -> bool:
+    async def update(self, get_film_details: bool = True) -> bool:
         print("Updating...")
         is_changed = False
         for member in self.members:
             member_last = copy.deepcopy(member)
-            member.list = await FilmList.from_url(member_last.contest_url)
+            member.list = await FilmList.from_url(
+                url=member_last.contest_url,
+                get_film_details=get_film_details,
+            )
             if member.list != member_last.list:
                 is_changed = True
                 member.num_films_since_last_update = len(member.list) - len(member_last.list)
