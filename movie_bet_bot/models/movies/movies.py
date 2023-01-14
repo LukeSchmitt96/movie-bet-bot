@@ -240,7 +240,11 @@ class Contest:
             )
         return contests
 
-    async def update(self, get_film_details: bool = True) -> bool:
+    async def update(
+        self,
+        get_film_details: bool = True,
+        save_on_update: bool = True
+    ) -> bool:
         print("Updating...")
         is_changed = False
         for member in self.members:
@@ -259,7 +263,7 @@ class Contest:
             key=lambda x: x.num_films_watched,
             reverse=True
         )
-        if is_changed:
+        if save_on_update and is_changed:
             self.save()
         else:
             print("No change since last update.")
