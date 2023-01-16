@@ -6,3 +6,4 @@ movie_bot_conf.yaml
 db.yaml
 update_image.png
 .vscode
+data/
