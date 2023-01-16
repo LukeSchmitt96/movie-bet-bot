@@ -1,13 +1,13 @@
 from typing import Dict
 
 CONTEST_PLACE_MAP: Dict[int, str] = {
-  1: "🥇",
-  2: "🥈",
-  3: "🥉",
+    1: "🥇",
+    2: "🥈",
+    3: "🥉",
 }
 
-LB_URL_ROOT = 'https://letterboxd.com'
-POSTERPATH_URL_BASE = 'https://www.themoviedb.org/t/p/w92'
+LB_URL_ROOT = "https://letterboxd.com"
+POSTERPATH_URL_BASE = "https://www.themoviedb.org/t/p/w92"
 
 HTML_HEAD = """
 <head>
