@@ -54,6 +54,12 @@ HTML_HEAD = """
             text-align: center;
         }
 
+        span.diff {
+            display: inline-block;
+            width: 30px;
+            text-align: center;
+        }
+
         span.name {
             display: inline-block;
             width: 60px;
@@ -112,7 +118,7 @@ HTML_STANDINGS_MEMBER = """
     <span class="place">{place}</span>
     <span class="name">{name}:</span>
     <span class="score">{num_films_watched}</span>
-    <span class="diff">(+{films_since_last_update})</span>
+    <span class="diff">{films_since_last_update}</span>
 </div>
 """
 

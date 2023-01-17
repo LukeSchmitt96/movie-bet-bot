@@ -332,11 +332,16 @@ class Contest:
         html_updates = ""  # html str w/ all member's films watched since last update
         for member in self.members:
             html_films = ""  # html str w/ a member's films watched since last update
+            html_films_since_last_update = (
+                f"(+{member.num_films_since_last_update})"
+                if member.num_films_since_last_update > 0
+                else "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+            )
             html_members += HTML_STANDINGS_MEMBER.format(
                 place=map_place(member.place),
                 name=member.name,
                 num_films_watched=member.num_films_watched,
-                films_since_last_update=member.num_films_since_last_update,
+                films_since_last_update=html_films_since_last_update,
             )
             # skip adding member to update if no films in this update
             if member.num_films_since_last_update == 0:
