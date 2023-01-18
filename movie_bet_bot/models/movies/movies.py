@@ -3,11 +3,11 @@ import copy
 
 from datetime import datetime
 import os
-import time
 from typing import Dict, List, Set, Union
 import yaml
 import tmdbsimple as tmdb
 
+import bs4
 from bs4 import BeautifulSoup
 
 from movie_bet_bot.utils import fetch_page_body_from_url, map_place
@@ -25,6 +25,7 @@ from movie_bet_bot.utils.images import html_to_image
 LIST_CLASS_NAME = "poster-list"
 FILM_CLASS_NAME = "film-detail"
 FILM_WATCHTIME_CLASS_NAME = "text-link text-footer"
+FILM_RATING_CLASS_NAME = "rating"
 
 
 class Film:
@@ -32,6 +33,8 @@ class Film:
     url: str
     runtime: int = -1
     poster_url: str = ""
+    _rating: int = -1
+    _rating_stars: str = ""
 
     def __init__(
         self,
@@ -52,6 +55,14 @@ class Film:
             "runtime": self.runtime,
             "poster_url": self.poster_url,
         }
+
+    @property
+    def rating(self) -> str:
+        return self._rating
+
+    @rating.setter
+    def rating(self, r) -> None:
+        self._rating = r
 
     def __repr__(self) -> str:
         return f"Film(title='{self.title}',url='{self.url}',runtime={self.runtime},poster_url='{self.poster_url}')"
@@ -80,6 +91,10 @@ class FilmList:
             film_title = li.a.text
             film_url = LB_URL_ROOT + li.a["href"]
             film = Film(film_title, film_url)
+            try:
+                film.rating = li.find_all("span", {"class": "rating"})[0].text.strip()
+            except (AttributeError, IndexError):
+                pass
             if get_film_details:
                 search = tmdb.Search()
                 resp = search.movie(query=film_title)
@@ -335,7 +350,7 @@ class Contest:
             html_films_since_last_update = (
                 f"(+{member.num_films_since_last_update})"
                 if member.num_films_since_last_update > 0
-                else "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                else ""
             )
             html_members += HTML_STANDINGS_MEMBER.format(
                 place=map_place(member.place),
@@ -347,11 +362,14 @@ class Contest:
             if member.num_films_since_last_update == 0:
                 continue
             for film in member._films_since_last_update:
-                html_films += HTML_STANDINGS_UPDATE_FILMS.format(poster=film.poster_url)
+                html_films += HTML_STANDINGS_UPDATE_FILMS.format(
+                    poster=film.poster_url,
+                    rating=film.rating,
+                )
             html_updates += HTML_STANDINGS_UPDATE.format(
                 name=member.name, films=html_films
             )
-            html_height += 150
+            html_height += 174
         html = HTML_STANDINGS_TEMPLATE.format(
             head=HTML_HEAD,
             time=self.time_last_update.strftime("%m/%d %H:%M"),

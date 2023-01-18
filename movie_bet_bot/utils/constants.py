@@ -87,10 +87,24 @@ HTML_HEAD = """
             margin: -100px;
         }
 
-        .film {
+        .watcher>.film-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .film-container>.film-poster {
             margin-left: auto;
             margin-right: auto;
-        }    </style>
+        }
+
+        .film-container>.film-rating {
+            margin-left: auto;
+            margin-right: auto;
+            color: #00C030;
+            height: 2em;
+        }
+    </style>
 </head>
 """
 
@@ -130,5 +144,8 @@ HTML_STANDINGS_UPDATE = """
 """
 
 HTML_STANDINGS_UPDATE_FILMS = """
-    <img class="film" src="{poster}" alt="">
+<div class="film-container">
+    <img class="film-poster" src="{poster}" alt="">
+    <span class="film-rating">{rating}</span>
+</div>
 """
