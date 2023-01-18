@@ -1,5 +1,4 @@
 from typing import Dict
-import yaml
 
 
 def parse_config(config: Dict) -> Dict:

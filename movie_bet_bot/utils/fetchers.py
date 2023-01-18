@@ -1,5 +1,3 @@
-from typing import Set
-
 import urllib.request as urllib
 from bs4 import BeautifulSoup
 
