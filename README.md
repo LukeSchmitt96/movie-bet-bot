@@ -53,5 +53,5 @@ $ poetry run pytest
 7. Run project
 
 ```console
-$ poetry run python ./movie_bet_bot/main.py
+$ poetry run python movie_bet_bot
 ```
