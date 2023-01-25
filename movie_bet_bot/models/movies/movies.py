@@ -88,6 +88,7 @@ class FilmList:
         list_result = list_page.find_all("li", class_=FILM_CLASS_NAME)
         for li in list_result:
             film_title = li.a.text
+            film_year = li.find_all("small", {"class": "metadata"})[0].a.text.strip()
             film_url = LB_URL_ROOT + li.a["href"]
             film = Film(film_title, film_url)
             try:
@@ -96,7 +97,7 @@ class FilmList:
                 pass
             if get_film_details:
                 search = tmdb.Search()
-                resp = search.movie(query=film_title)
+                resp = search.movie(query=film_title, year=film_year)
                 if "results" in resp:
                     film_info = tmdb.Movies(int(resp["results"][0]["id"])).info()
                     film.poster_url = POSTERPATH_URL_BASE + film_info["poster_path"]
