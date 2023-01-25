@@ -33,8 +33,7 @@ class Film:
     url: str
     runtime: int = -1
     poster_url: str = ""
-    _rating: int = -1
-    _rating_stars: str = ""
+    _rating: str = ""
 
     def __init__(
         self,
