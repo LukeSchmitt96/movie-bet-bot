@@ -1,10 +1,12 @@
 import os
 from typing import Dict
 
+import tmdbsimple as tmdb
 
-TOKEN: str = os.getenv("DISCORD_TOKEN")
-CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID"))
-GUILD_ID = int(os.getenv("DISCORD_GUILD_ID"))
+tmdb.API_KEY = os.getenv("TMDB_API_KEY")
+TOKEN: str = os.getenv("DISCORD_TOKEN", default="")
+CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID", default=0))
+GUILD_ID = int(os.getenv("DISCORD_GUILD_ID", default=0))
 DB_PATH: str = os.getenv("DB_PATH")
 
 # Fun little mapping for top three places to corresponding medals
