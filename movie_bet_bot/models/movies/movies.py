@@ -267,20 +267,10 @@ class Contest:
             else:
                 member.num_films_since_last_update = 0
 
-        # sort members by number of films watched and watchtime
-        self.members.sort(key=lambda x: x.num_films_watched, reverse=True)
-        # single pass sort for watchtime
-        # TODO: will probably break with a tie >2 members
-        for index in range(len(self.members) - 1):
-            member_this, member_next = self.members[index], self.members[index + 1]
-            if (
-                member_this.num_films_watched == member_next.num_films_watched
-                and member_this.watchtime < member_next.watchtime
-            ):
-                self.members[index], self.members[index + 1] = (
-                    self.members[index + 1],
-                    self.members[index],
-                )
+        # sort members by number of films watched first and watchtime second
+        self.members.sort(
+            key=lambda x: (x.num_films_watched, x.watchtime), reverse=True
+        )
 
         if save_on_update and is_changed:
             self.save()
