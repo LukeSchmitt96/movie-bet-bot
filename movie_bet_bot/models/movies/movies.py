@@ -7,25 +7,10 @@ from typing import Dict, List, Set, Union
 import yaml
 import tmdbsimple as tmdb
 
-import bs4
 from bs4 import BeautifulSoup
 
-from movie_bet_bot.utils import fetch_page_body_from_url, map_place
-from movie_bet_bot.utils.constants import (
-    HTML_STANDINGS_UPDATE,
-    HTML_STANDINGS_UPDATE_FILMS,
-    LB_URL_ROOT,
-    POSTERPATH_URL_BASE,
-    HTML_STANDINGS_MEMBER,
-    HTML_STANDINGS_TEMPLATE,
-    HTML_HEAD,
-)
+from movie_bet_bot.utils import constants, fetch_page_body_from_url, map_place
 from movie_bet_bot.utils.images import html_to_image
-
-LIST_CLASS_NAME = "poster-list"
-FILM_CLASS_NAME = "film-detail"
-FILM_WATCHTIME_CLASS_NAME = "text-link text-footer"
-FILM_RATING_CLASS_NAME = "rating"
 
 
 class Film:
@@ -64,7 +49,10 @@ class Film:
         self._rating = r
 
     def __repr__(self) -> str:
-        return f"Film(title='{self.title}',url='{self.url}',runtime={self.runtime},poster_url='{self.poster_url}')"
+        return (
+            f"Film(title='{self.title}',url='{self.url}',"
+            f"runtime={self.runtime},poster_url='{self.poster_url}')"
+        )
 
     def __eq__(self, __o: Film) -> bool:
         return self.title == __o.title and self.url == __o.url
@@ -85,11 +73,11 @@ class FilmList:
     async def from_url(url: str, get_film_details: bool = True) -> FilmList:
         films: Set[Film] = set()
         list_page = await fetch_page_body_from_url(url)
-        list_result = list_page.find_all("li", class_=FILM_CLASS_NAME)
+        list_result = list_page.find_all("li", class_=constants.FILM_CLASS_NAME)
         for li in list_result:
             film_title = li.a.text
             film_year = li.find_all("small", {"class": "metadata"})[0].a.text.strip()
-            film_url = LB_URL_ROOT + li.a["href"]
+            film_url = constants.LB_URL_ROOT + li.a["href"]
             film = Film(film_title, film_url)
             try:
                 film.rating = li.find_all("span", {"class": "rating"})[0].text.strip()
@@ -100,7 +88,9 @@ class FilmList:
                 resp = search.movie(query=film_title, year=film_year)
                 if "results" in resp:
                     film_info = tmdb.Movies(int(resp["results"][0]["id"])).info()
-                    film.poster_url = POSTERPATH_URL_BASE + film_info["poster_path"]
+                    film.poster_url = (
+                        constants.POSTERPATH_URL_BASE + film_info["poster_path"]
+                    )
                     film.runtime = int(film_info["runtime"])
             films.add(film)
         return FilmList(url, films)
@@ -113,9 +103,9 @@ class FilmList:
     def from_html_string(html: str) -> FilmList:
         html_soup = BeautifulSoup(html, "html.parser")
         films: Set[Film] = set()
-        list_result = html_soup.find_all("li", class_=FILM_CLASS_NAME)
+        list_result = html_soup.find_all("li", class_=constants.FILM_CLASS_NAME)
         for li in list_result:
-            films.add(Film(li.a.text, LB_URL_ROOT + li.a["href"]))
+            films.add(Film(li.a.text, constants.LB_URL_ROOT + li.a["href"]))
         return FilmList("", films)
 
     def to_dict(self) -> Dict[str, Union[str, List[Dict]]]:
@@ -213,7 +203,6 @@ class Member:
 class Contest:
     name: str
     members: List[Member]
-    db_path: str = os.getenv("DB_PATH")
     standings_string: str = ""
 
     def __init__(
@@ -312,9 +301,9 @@ class Contest:
         }
 
     def load(self):
-        print(f"Attempting to load from database at '{self.db_path}'...")
+        print(f"Attempting to load from database at '{constants.DB_PATH}'...")
         try:
-            with open(self.db_path, "r") as db_file:
+            with open(constants.DB_PATH, "r") as db_file:
                 saved_data = yaml.safe_load(db_file)  # TODO
                 if saved_data is None:
                     return
@@ -322,12 +311,12 @@ class Contest:
                 self.members = conf.members
             print(f"Loaded!")
         except OSError as e:
-            print(f"Problem with database file at '{self.db_path}': ", e)
+            print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 
     def save(self):
-        print(f"Attempting to save to database at '{self.db_path}'...")
+        print(f"Attempting to save to database at '{constants.DB_PATH}'...")
         try:
-            with open(self.db_path, "w") as db_file:
+            with open(constants.DB_PATH, "w") as db_file:
                 db_file.write(
                     yaml.safe_dump(
                         {
@@ -337,10 +326,10 @@ class Contest:
                 )
             print(f"Saved!")
         except OSError as e:
-            print(f"Problem with database file at '{self.db_path}': ", e)
+            print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 
     def to_image(self) -> List[str]:
-        html_height = 218
+        html_height = constants.IMAGE_BASE_HEIGHT  # height of created image
         html_members = (
             ""  # html str w/ current scores, num of films watched since last update
         )
@@ -352,7 +341,7 @@ class Contest:
                 if member.num_films_since_last_update > 0
                 else ""
             )
-            html_members += HTML_STANDINGS_MEMBER.format(
+            html_members += constants.HTML_STANDINGS_MEMBER.format(
                 place=map_place(member.place),
                 name=member.name,
                 num_films_watched=member.num_films_watched,
@@ -362,20 +351,21 @@ class Contest:
             if member.num_films_since_last_update == 0:
                 continue
             for film in member._films_since_last_update:
-                html_films += HTML_STANDINGS_UPDATE_FILMS.format(
+                html_films += constants.HTML_STANDINGS_UPDATE_FILMS.format(
                     poster=film.poster_url,
                     rating=film.rating,
                 )
-            html_updates += HTML_STANDINGS_UPDATE.format(
+            html_updates += constants.HTML_STANDINGS_UPDATE.format(
                 name=member.name, films=html_films
             )
             html_height += 174
-        html = HTML_STANDINGS_TEMPLATE.format(
-            head=HTML_HEAD,
-            time=self.time_last_update.strftime("%m/%d %H:%M"),
-            members=html_members,
-            updates=html_updates,
-        )
         return html_to_image(
-            html=html, out="update_image.png", size=(480, html_height + 20)
+            html=constants.HTML_STANDINGS_TEMPLATE.format(
+                head=constants.HTML_HEAD,
+                time=self.time_last_update.strftime("%m/%d %H:%M"),
+                members=html_members,
+                updates=html_updates,
+            ),
+            out="update_image.png",
+            size=(480, html_height + 20),
         )

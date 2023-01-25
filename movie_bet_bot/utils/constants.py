@@ -1,14 +1,41 @@
+import os
 from typing import Dict
 
+import tmdbsimple as tmdb
+
+tmdb.API_KEY = os.getenv("TMDB_API_KEY")
+TOKEN: str = os.getenv("DISCORD_TOKEN", default="")
+CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID", default=0))
+GUILD_ID = int(os.getenv("DISCORD_GUILD_ID", default=0))
+DB_PATH: str = os.getenv("DB_PATH")
+
+# Fun little mapping for top three places to corresponding medals
 CONTEST_PLACE_MAP: Dict[int, str] = {
     1: "🥇",
     2: "🥈",
     3: "🥉",
 }
 
+# Class name of the ul element containing the films in a Letterboxd List
+LIST_CLASS_NAME = "poster-list"
+
+# Class name of an li element containing a film in a Letterboxd List
+FILM_CLASS_NAME = "film-detail"
+
+# Class name of a span element containing the rating a member gave to a film in a Letterboxd List
+FILM_RATING_CLASS_NAME = "rating"
+
+# Letterboxd URL root
 LB_URL_ROOT = "https://letterboxd.com"
+
+# TMDB's URL base for its poster images. We are getting 92px width posters (w92)
 POSTERPATH_URL_BASE = "https://www.themoviedb.org/t/p/w92"
 
+# Base height of the image that will be created on updates. This number is the size of the
+# member standings section in pixels
+IMAGE_BASE_HEIGHT = 218
+
+# Head of the update image. Includes style
 HTML_HEAD = """
 <head>
     <style>
@@ -108,6 +135,7 @@ HTML_HEAD = """
 </head>
 """
 
+# Template for the update image
 HTML_STANDINGS_TEMPLATE = """
 <html>
     </head>
@@ -127,6 +155,7 @@ HTML_STANDINGS_TEMPLATE = """
 </html>
 """
 
+# Template for each member in the standings update image
 HTML_STANDINGS_MEMBER = """
 <div class="member">
     <span class="place">{place}</span>
@@ -136,6 +165,7 @@ HTML_STANDINGS_MEMBER = """
 </div>
 """
 
+# Template for a member's new films watched in the standings update image
 HTML_STANDINGS_UPDATE = """
 <div class="watcher">
     <span class="name">{name}</span>
@@ -143,6 +173,7 @@ HTML_STANDINGS_UPDATE = """
 </div>
 """
 
+# Template for each new film watched by a member in the standings update image
 HTML_STANDINGS_UPDATE_FILMS = """
 <div class="film-container">
     <img class="film-poster" src="{poster}" alt="">
