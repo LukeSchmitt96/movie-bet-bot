@@ -20,20 +20,29 @@ $ git clone https://github.com/LukeSchmitt96/movie-bet-bot.git
 $ poetry install --with test
 ```
 
-4. Configure project's `<project_root>/movie_bot_conf.yaml` file
+4. Seed project's database
 
 ```yaml
 contests:
-  - name: NAME
-    members:
-    - name: NAME_1
-      profile_url: PROFILE_URL_1
-      contest_url: CONTEST_URL_1
-    - name: NAME_2
-      profile_url: PROFILE_URL_2
-      contest_url: CONTEST_URL_2
-bot:
-  interval_callback_duration: 120000
+- members:
+  - contest_url: https://letterboxd.com/PROFILE/list/LIST_NAME/detail/
+    list:
+      films: []
+      url: https://letterboxd.com/PROFILE/list/LIST_NAME/detail/
+    name: NAME
+    profile_url: https://letterboxd.com/PROFILE/
+    watchtime: 0
+  - contest_url: https://letterboxd.com/NAME/list/LIST_NAME/detail/
+    list:
+      films: []
+      url: https://letterboxd.com/PROFILE/list/LIST_NAME/detail/
+    name: NAME
+    profile_url: https://letterboxd.com/PROFILE/
+    watchtime: 0
+
+  ...
+
+  name: CONTEST_NAME
 ```
 
 5. Configure project's `<project_root>/.env` file
@@ -42,12 +51,15 @@ bot:
 DISCORD_TOKEN="..."
 DISCORD_GUILD_ID="..."
 DISCORD_CHANNEL_ID="..."
+TMDB_API_KEY="..."
+DB_PATH="..."
 ```
 
-6. (Optional) Run tests
+6. (Optional) Run tests, pre-commit hooks
 
 ```console
 $ poetry run pytest
+$ poetry run pre-commit run -a
 ```
 
 7. Run project
