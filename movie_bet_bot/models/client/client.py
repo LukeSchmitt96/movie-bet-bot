@@ -1,8 +1,7 @@
-import os
 from typing import Any
 
 import discord
-from discord.ext import tasks
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from movie_bet_bot.models.movies import Contest
 from movie_bet_bot.utils import constants
@@ -27,15 +26,17 @@ class MovieBetBot(discord.Client):
         print(f"Logged in as {self.user}")
         self.guild = self.get_guild(constants.GUILD_ID)
         self.channel = self.guild.get_channel_or_thread(constants.CHANNEL_ID)
-        self.contest_message_task.start()
+        self.loop.create_task(self.task_setup())
 
     async def send_message(self, msg: str = None, filepath: str = None):
         file = discord.File(filepath) if filepath is not None else None
         await self.channel.send(msg, file=file)
 
-    @tasks.loop(minutes=60.0)  # TODO: set this from config
     async def contest_message_task(self) -> None:
         if await self.contest.update():
-            await self.send_message(
-                filepath=self.contest.to_image()[0],
-            )
+            await self.send_message(filepath=self.contest.to_image()[0])
+
+    async def task_setup(self):
+        scheduler = AsyncIOScheduler()
+        scheduler.add_job(self.contest_message_task, "cron", hour="*")
+        scheduler.start()

@@ -1,4 +1,4 @@
-from .bot import MovieBetBot
+from .client import MovieBetBot
 
 __all__ = [
     "MovieBetBot",

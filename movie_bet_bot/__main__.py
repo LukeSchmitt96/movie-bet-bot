@@ -1,7 +1,7 @@
 import yaml
 from dotenv import load_dotenv
 
-from movie_bet_bot.models.bot import MovieBetBot
+from movie_bet_bot.models.client import MovieBetBot
 from movie_bet_bot.models.movies import Contest
 from movie_bet_bot.utils import constants
 
