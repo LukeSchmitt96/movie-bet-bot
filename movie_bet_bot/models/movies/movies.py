@@ -266,11 +266,28 @@ class Contest:
                 member.films_in_update(member_last.list.films)
             else:
                 member.num_films_since_last_update = 0
+
+        # sort members by number of films watched and watchtime
         self.members.sort(key=lambda x: x.num_films_watched, reverse=True)
+        # single pass sort for watchtime
+        # TODO: will probably break with a tie >2 members
+        for index in range(len(self.members) - 1):
+            member_this, member_next = self.members[index], self.members[index + 1]
+            if (
+                member_this.num_films_watched == member_next.num_films_watched
+                and member_this.watchtime < member_next.watchtime
+            ):
+                self.members[index], self.members[index + 1] = (
+                    self.members[index + 1],
+                    self.members[index],
+                )
+
         if save_on_update and is_changed:
             self.save()
         else:
             print("No change since last update.")
+
+        self.update_standings()
         return is_changed
 
     def update_standings(self) -> None:
@@ -279,17 +296,15 @@ class Contest:
             f'Standings as of {self.time_last_update.strftime("%m/%d %H:%M")}:\n'
         )
         place = 1
-        last_member_films_watched = -1
         for member in self.members:
-            if member.num_films_watched < last_member_films_watched:
-                place += 1
             member.place = place
-            last_member_films_watched = member.num_films_watched
+            place += 1
             self.standings_string += (
-                f"* {map_place(member.place)} "
-                f"{member.name}: "
-                f"{member.num_films_watched} "
-                f"(+{member.num_films_since_last_update})"
+                f"* {map_place(member.place)}\t"
+                f"{member.name}:\t"
+                f"{member.num_films_watched}\t"
+                f"(+{member.num_films_since_last_update})\t"
+                f"{member.watchtime / 60:.1f}hrs"
                 "\n"
             )
         print(self.standings_string)
@@ -300,11 +315,11 @@ class Contest:
             "members": [member.to_dict() for member in self.members],
         }
 
-    def load(self):
+    def load(self) -> None:
         print(f"Attempting to load from database at '{constants.DB_PATH}'...")
         try:
             with open(constants.DB_PATH, "r") as db_file:
-                saved_data = yaml.safe_load(db_file)  # TODO
+                saved_data = yaml.safe_load(db_file)
                 if saved_data is None:
                     return
                 conf = Contest.from_config(saved_data["contests"], from_config=False)[0]
@@ -313,7 +328,7 @@ class Contest:
         except OSError as e:
             print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 
-    def save(self):
+    def save(self) -> None:
         print(f"Attempting to save to database at '{constants.DB_PATH}'...")
         try:
             with open(constants.DB_PATH, "w") as db_file:
@@ -348,7 +363,7 @@ class Contest:
                 films_since_last_update=html_films_since_last_update,
             )
             # skip adding member to update if no films in this update
-            if member.num_films_since_last_update == 0:
+            if member.num_films_since_last_update < 1:
                 continue
             for film in member._films_since_last_update:
                 html_films += constants.HTML_STANDINGS_UPDATE_FILMS.format(

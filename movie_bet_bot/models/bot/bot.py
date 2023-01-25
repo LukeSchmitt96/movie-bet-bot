@@ -36,7 +36,6 @@ class MovieBetBot(discord.Client):
     @tasks.loop(minutes=60.0)  # TODO: set this from config
     async def contest_message_task(self) -> None:
         if await self.contest.update():
-            self.contest.update_standings()
             await self.send_message(
                 filepath=self.contest.to_image()[0],
             )
