@@ -115,7 +115,7 @@ class FilmList:
         }
 
     def __repr__(self) -> str:
-        return f"Film(url={self.url},films={self.films})"
+        return f"FilmList(url={self.url},films={self.films})"
 
     def __len__(self) -> int:
         return len(self.films)
@@ -194,7 +194,7 @@ class Member:
         }
 
     def __repr__(self) -> str:
-        return f"Member(name={self.name},list=[{self.list}])"
+        return f"Member(name={self.name},list={self.list})"
 
     def __hash__(self) -> int:
         return hash((self.profile_url, self.list))

@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches: [main]
@@ -25,4 +26,4 @@ jobs:
       - name: Install dependencies
         run: poetry install --with test
       - name: Run tests
-        run: poetry run pytest
+        run: poetry run task test

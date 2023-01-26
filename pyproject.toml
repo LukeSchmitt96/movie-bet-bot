@@ -33,6 +33,7 @@ coverage-badge = "^1.1.0"
 [tool.taskipy.tasks]
 start = "python movie_bet_bot"
 test = "pytest --cov=movie_bet_bot tests/"
+pre-commit = "pre-commit run -a"
 coverage-badge = "coverage-badge -f -o images/coverage.svg"
 
 [build-system]

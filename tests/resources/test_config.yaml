@@ -1,0 +1,39 @@
+contests:
+- members:
+  - contest_url: contest_url1
+    films_since_last_update: 0
+    list:
+      films:
+      - poster_url: poster_url1
+        runtime: 1
+        title: film_title1
+        url: film_url1
+      - poster_url: poster_url2
+        runtime: 2
+        title: film_title2
+        url: film_url2
+      - poster_url: poster_url3
+        runtime: 3
+        title: film_title3
+        url: film_url3
+      url: contest_url1
+    name: member_name1
+    profile_url: profile_url1
+    watchtime: 6
+  - contest_url: contest_url2
+    films_since_last_update: 0
+    list:
+      films:
+      - poster_url: poster_url4
+        runtime: 4
+        title: film_title4
+        url: film_url4
+      - poster_url: poster_url5
+        runtime: 5
+        title: film_title5
+        url: film_url5
+      url: contest_url2
+    name: member_name2
+    profile_url: profile_url2
+    watchtime: 9
+  name: contest_name1
