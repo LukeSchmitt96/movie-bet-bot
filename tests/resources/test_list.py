@@ -1,3 +1,4 @@
+# flake8: noqa
 PAGE = """<!DOCTYPE html>
 <html id="html" lang="en" class="no-mobile no-js">
 
