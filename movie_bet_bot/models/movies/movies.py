@@ -2,7 +2,6 @@ from __future__ import annotations
 import copy
 
 from datetime import datetime
-import os
 from typing import Dict, List, Set, Union
 import yaml
 import tmdbsimple as tmdb
@@ -74,6 +73,7 @@ class FilmList:
         films: Set[Film] = set()
         list_page = await fetch_page_body_from_url(url)
         list_result = list_page.find_all("li", class_=constants.FILM_CLASS_NAME)
+        li: BeautifulSoup
         for li in list_result:
             film_title = li.a.text
             film_year = li.find_all("small", {"class": "metadata"})[0].a.text.strip()
@@ -314,7 +314,7 @@ class Contest:
                     return
                 conf = Contest.from_config(saved_data["contests"], from_config=False)[0]
                 self.members = conf.members
-            print(f"Loaded!")
+            print("Loaded!")
         except OSError as e:
             print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 
@@ -329,7 +329,7 @@ class Contest:
                         }
                     )
                 )
-            print(f"Saved!")
+            print("Saved!")
         except OSError as e:
             print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 

@@ -1,4 +1,6 @@
 import urllib.request as urllib
+from urllib.error import URLError
+
 from bs4 import BeautifulSoup
 
 
@@ -10,7 +12,7 @@ async def fetch_page_body_from_url(url: str) -> BeautifulSoup:
     )
     try:
         page = urllib.urlopen(req)
-    except:
-        print(f"Could not open '{url}'.")
+    except URLError as e:
+        print(f"Could not open '{url}': ", e)
         return ""
     return BeautifulSoup(page.read(), "html.parser")
