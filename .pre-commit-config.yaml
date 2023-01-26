@@ -40,13 +40,3 @@ repos:
         pass_filenames: false
         stages:
           - push
-
-  - repo: local
-    hooks:
-      - id: coverage-badge
-        name: coverage-badge
-        entry: poetry run task coverage-badge
-        language: system
-        pass_filenames: false
-        stages:
-          - push
