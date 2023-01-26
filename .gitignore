@@ -7,3 +7,4 @@ db.yaml
 update_image.png
 .vscode
 data/
+.coverage

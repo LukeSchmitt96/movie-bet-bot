@@ -22,15 +22,18 @@ apscheduler = "^3.9.1.post1"
 pytest = "^7.2.0"
 lark = "^1.1.5"
 pytest-asyncio = "^0.20.3"
+pytest-cov = "^4.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
 taskipy = "^1.10.3"
 pre-commit = "^3.0.0"
+coverage-badge = "^1.1.0"
 
 [tool.taskipy.tasks]
 start = "python movie_bet_bot"
-test = "pytest"
+test = "pytest --cov=movie_bet_bot tests/"
+coverage-badge = "coverage-badge -f -o images/coverage.svg"
 
 [build-system]
 requires = ["poetry-core"]
