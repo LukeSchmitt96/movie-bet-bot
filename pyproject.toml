@@ -5,7 +5,9 @@ description = "Discord bot that tracks multiple Letterboxd lists and periodicall
 authors = ["Luke Schmitt <luke@lukeschmitt.me>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "movie_bet_bot"}]
+packages = [
+    {include = "movie_bet_bot"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -17,13 +19,11 @@ tmdbsimple = "^2.9.1"
 html2image = "^2.0.1"
 apscheduler = "^3.9.1.post1"
 
-
 [tool.poetry.group.test.dependencies]
-pytest = "^7.2.0"
 lark = "^1.1.5"
 pytest-asyncio = "^0.20.3"
 pytest-cov = "^4.0.0"
-
+coverage = "^7.1.0"
 
 [tool.poetry.group.dev.dependencies]
 taskipy = "^1.10.3"
@@ -32,8 +32,11 @@ coverage-badge = "^1.1.0"
 
 [tool.taskipy.tasks]
 start = "python movie_bet_bot"
-test = "pytest --cov=movie_bet_bot tests/"
 pre-commit = "pre-commit run -a"
+test = "python -m unittest discover"
+test-cov = "coverage run -m unittest discover"
+cov-report = "coverage report"
+cov-report-html = "coverage html"
 coverage-badge = "coverage-badge -f -o images/coverage.svg"
 
 [build-system]
