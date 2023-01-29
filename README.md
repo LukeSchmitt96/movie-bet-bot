@@ -1,7 +1,7 @@
 # Movie Bet Bot
 
 ## CI Status
-[![CI](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/ci.yml) ![Coverage](images/coverage.svg)
+[![CI](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/ci.yml) [![pre-commit](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/LukeSchmitt96/movie-bet-bot/actions/workflows/pre-commit.yml) ![Coverage](images/coverage.svg)
 
 ## Installation
 
@@ -20,10 +20,10 @@ $ git clone https://github.com/LukeSchmitt96/movie-bet-bot.git
 3. Install project with Poetry
 
 ```console
-$ poetry install --with test
+$ poetry install --with test,dev
 ```
 
-4. Seed project's database
+4. Seed bot's database
 
 ```yaml
 contests:
@@ -48,7 +48,7 @@ contests:
   name: CONTEST_NAME
 ```
 
-5. Configure project's `<project_root>/.env` file
+5. Configure bot's `<project_root>/.env` file
 
 ```bash
 DISCORD_TOKEN="..."
@@ -61,12 +61,12 @@ DB_PATH="..."
 6. (Optional) Run tests, pre-commit hooks
 
 ```console
-$ poetry run pytest
-$ poetry run pre-commit run -a
+$ poetry run task test
+$ poetry run task pre-commit
 ```
 
-7. Run project
+7. Run bot
 
 ```console
-$ poetry run python movie_bet_bot
+$ poetry run task start
 ```
