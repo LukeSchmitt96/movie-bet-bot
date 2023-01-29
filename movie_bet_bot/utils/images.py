@@ -1,4 +1,5 @@
 from typing import List, Tuple
+
 from html2image import Html2Image
 
 

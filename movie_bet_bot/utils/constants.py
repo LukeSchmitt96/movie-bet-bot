@@ -1,5 +1,4 @@
 import os
-from typing import Dict
 
 import tmdbsimple as tmdb
 
@@ -8,13 +7,6 @@ TOKEN: str = os.getenv("DISCORD_TOKEN", default="")
 CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID", default=0))
 GUILD_ID = int(os.getenv("DISCORD_GUILD_ID", default=0))
 DB_PATH: str = os.getenv("DB_PATH")
-
-# Fun little mapping for top three places to corresponding medals
-CONTEST_PLACE_MAP: Dict[int, str] = {
-    1: "🥇",
-    2: "🥈",
-    3: "🥉",
-}
 
 # Class name of the ul element containing the films in a Letterboxd List
 LIST_CLASS_NAME = "poster-list"

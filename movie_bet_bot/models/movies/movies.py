@@ -1,15 +1,17 @@
 from __future__ import annotations
-import copy
 
+import copy
 from datetime import datetime
 from typing import Dict, List, Set, Union
-import yaml
-import tmdbsimple as tmdb
 
+import tmdbsimple as tmdb
+import yaml
 from bs4 import BeautifulSoup
 
-from movie_bet_bot.utils import constants, fetch_page_body_from_url, map_place
+from movie_bet_bot.utils import constants
+from movie_bet_bot.utils.fetchers import fetch_page_body_from_url
 from movie_bet_bot.utils.images import html_to_image
+from movie_bet_bot.utils.utils import map_place
 
 
 class Film:
