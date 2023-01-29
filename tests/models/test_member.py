@@ -1,5 +1,6 @@
 import copy
 from typing import Final
+import unittest
 
 from movie_bet_bot.models.movies.movies import Film, Member
 
@@ -20,7 +21,7 @@ member_dict: Final = {
 }
 
 
-class Test_Member:
+class Test_Member(unittest.TestCase):
     def test_compare(self):
         member = copy.deepcopy(test_member)
         member_updated = copy.deepcopy(test_member)

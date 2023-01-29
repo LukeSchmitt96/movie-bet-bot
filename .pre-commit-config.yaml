@@ -30,13 +30,3 @@ repos:
     hooks:
       - id: poetry-check
       - id: poetry-lock
-
-  - repo: local
-    hooks:
-      - id: test
-        name: test
-        entry: poetry run task test
-        language: system
-        pass_filenames: false
-        stages:
-          - push

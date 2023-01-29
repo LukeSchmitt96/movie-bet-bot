@@ -1,9 +1,10 @@
-from movie_bet_bot.utils import map_place
+import unittest
+from movie_bet_bot.utils import utils
 
 
-class Test_Utils:
+class Test_Utils(unittest.TestCase):
     def test_map_place(self):
-        assert map_place(1) == "🥇"
-        assert map_place(2) == "🥈"
-        assert map_place(3) == "🥉"
-        assert map_place(4) == "4th"
+        self.assertEqual(utils.map_place(1), "🥇")
+        self.assertEqual(utils.map_place(2), "🥈")
+        self.assertEqual(utils.map_place(3), "🥉")
+        self.assertEqual(utils.map_place(4), "4th")

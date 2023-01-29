@@ -3,7 +3,7 @@ from typing import Any
 import discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from movie_bet_bot.models.movies import Contest
+from movie_bet_bot.models.movies import movies
 from movie_bet_bot.utils import constants
 
 INTENTS = discord.Intents.default()
@@ -11,11 +11,11 @@ INTENTS = discord.Intents.default()
 
 class MovieBetBot(discord.Client):
 
-    contest: Contest
+    contest: movies.Contest
     guild: discord.Guild
     channel: discord.Thread
 
-    def __init__(self, contest: Contest, **options: Any) -> None:
+    def __init__(self, contest: movies.Contest, **options: Any) -> None:
         super().__init__(intents=INTENTS, **options)
         self.contest = contest
 
