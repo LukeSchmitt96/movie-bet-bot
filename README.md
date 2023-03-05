@@ -7,8 +7,13 @@
 
 1. Install [Poetry](https://python-poetry.org/docs/)
 
+Linux, macOS, Windows (WSL)
 ```console
 $ curl -sSL https://install.python-poetry.org | python3 -
+```
+Windows (Powershell)
+```console
+$ (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
 ```
 
 2. Clone repo
