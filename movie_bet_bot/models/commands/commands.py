@@ -71,5 +71,6 @@ def create_standings(bot):
         if error:
             Logger.info("Could not get standings")
             await interaction.response.send_message("Could not get standings")
+
     # adds a command to the list of commands
     bot.add_command(name, description)
