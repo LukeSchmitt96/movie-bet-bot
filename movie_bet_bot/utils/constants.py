@@ -2,11 +2,11 @@ import os
 
 import tmdbsimple as tmdb
 
-tmdb.API_KEY = os.getenv("TMDB_API_KEY")
+tmdb.API_KEY = os.getenv("TMDB_API_KEY", default="")
 TOKEN: str = os.getenv("DISCORD_TOKEN", default="")
 CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID", default=0))
 GUILD_ID = int(os.getenv("DISCORD_GUILD_ID", default=0))
-DB_PATH: str = os.getenv("DB_PATH")
+DB_PATH: str = os.getenv("DB_PATH", default="")
 
 # Class name of the ul element containing the films in a Letterboxd List
 LIST_CLASS_NAME = "poster-list"

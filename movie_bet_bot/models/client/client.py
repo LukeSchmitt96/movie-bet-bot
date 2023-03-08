@@ -4,7 +4,6 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from movie_bet_bot.models.commands.commands import create_help, create_standings
 from movie_bet_bot.models.movies import movies
 from movie_bet_bot.utils import constants
-from movie_bet_bot.models.commands.command import Command
 from movie_bet_bot.models.logger.logger import print
 
 INTENTS = discord.Intents.default()
@@ -18,7 +17,7 @@ class MovieBetBot(discord.Client):
     # discords command tree. This is used to create and sync commands
     command_tree: discord.app_commands.CommandTree
     # list of created commands
-    commands: list[Command] = []
+    commands: list[any] = []
 
     def __init__(self, contest: movies.Contest, **options: Any) -> None:
         super().__init__(intents=INTENTS, **options)
@@ -75,7 +74,12 @@ class MovieBetBot(discord.Client):
         command: discord.app_commands.Command = self.command_tree.get_command(name)
         if command is not None:
             # adds the command to the list of commands
-            self.commands.append(Command(name, description, command.callback))
+            command = {
+                "name": name,
+                "description": description,
+                "callback": command.callback,
+            }
+            self.commands.append(command)
 
     # command setup
     def command_setup(self):
