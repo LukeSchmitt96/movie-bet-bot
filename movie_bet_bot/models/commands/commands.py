@@ -47,7 +47,9 @@ def create_standings(bot):
         show_hours_watched: bool = False,
     ):
         Logger.info("Running Standings Command")
+        error: bool = True
         if bot.contest is not None:
+            Logger.info("bot.contest is not None")
             # updates the standings if update_standings_first is true
             if update_standings_first:
                 Logger.info("Updating Standings")
@@ -55,14 +57,19 @@ def create_standings(bot):
             # gets the image of the standings
             image = bot.contest.to_image(update_standings_first, show_hours_watched)
             if image is not None and len(image) > 0:
+                Logger.info("image is not None and len(image) > 0")
                 filepath = image[0]
                 if filepath is not None:
+                    Logger.info("filepath is not None")
                     # creates a new file
                     file = discord.File(filepath)
                     if file is not None:
                         # sends the file
                         Logger.info("Sending Standings File")
+                        error = False
                         await interaction.response.send_message(file=file)
-
+        if error:
+            Logger.info("Could not get standings")
+            await interaction.response.send_message("Could not get standings")
     # adds a command to the list of commands
     bot.add_command(name, description)

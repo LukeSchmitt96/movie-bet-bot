@@ -144,11 +144,11 @@ HTML_STANDINGS_TEMPLATE = """
         {head}
     </head>
     <body>
-        <p>Standings as of {time}</p>
-        <div class="members">
+        <p class="{title_class}">Standings as of {time}</p>
+        <div class="members {memebers_class}">
             {members}
         </div>
-        <hr>
+        <hr class="{hr_class}">
         <p class="{updates_head_class}">{updates_head}</p>
         <div class="{updates_class}">
             {updates}
