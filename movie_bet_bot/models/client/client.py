@@ -62,7 +62,7 @@ class MovieBetBot(discord.Client):
     async def contest_message_task(self) -> None:
         """Update contest and send its update image."""
         if await self.contest.update():
-            await self.send_message(filepath=self.contest.to_image()[0])
+            await self.send_message(filepath=self.contest.to_image())
 
     async def task_setup(self) -> None:
         """Set up tasks."""

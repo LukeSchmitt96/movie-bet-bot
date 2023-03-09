@@ -60,17 +60,14 @@ def create_standings(bot):
                 Logger.info("Updating Standings")
                 update_standings_first = await bot.bot.contest.update()
             # get the image of the standings
-            image = bot.contest.to_image(update_standings_first, show_hours_watched)
-            if image is not None and len(image) > 0:
-                filepath = image[0]
-                if filepath is not None:
-                    # create a new discord.File
-                    file = discord.File(filepath)
-                    if file is not None:
-                        # sends the file
-                        Logger.info("Sending Standings File")
-                        error = False
-                        await interaction.response.send_message(file=file)
+            filepath = bot.contest.to_image(update_standings_first, show_hours_watched)
+            # create a new discord.File from filepath
+            file = discord.File(filepath)
+            if file is not None:
+                # sends the file
+                Logger.info("Sending Standings File")
+                error = False
+                await interaction.response.send_message(file=file)
         if error:
             Logger.info("Could not get standings")
             await interaction.response.send_message("Could not get standings")
