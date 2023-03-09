@@ -39,6 +39,9 @@ cov-report = "coverage report"
 cov-report-html = "coverage html"
 coverage-badge = "coverage-badge -f -o images/coverage.svg"
 
+[tool.black]
+line-length = 100
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
