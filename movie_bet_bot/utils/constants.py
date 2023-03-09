@@ -2,11 +2,11 @@ import os
 
 import tmdbsimple as tmdb
 
-tmdb.API_KEY = os.getenv("TMDB_API_KEY")
+tmdb.API_KEY = os.getenv("TMDB_API_KEY", default="")
 TOKEN: str = os.getenv("DISCORD_TOKEN", default="")
 CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID", default=0))
 GUILD_ID = int(os.getenv("DISCORD_GUILD_ID", default=0))
-DB_PATH: str = os.getenv("DB_PATH")
+DB_PATH: str = os.getenv("DB_PATH", default="")
 
 # Class name of the ul element containing the films in a Letterboxd List
 LIST_CLASS_NAME = "poster-list"
@@ -25,7 +25,8 @@ POSTERPATH_URL_BASE = "https://www.themoviedb.org/t/p/w92"
 
 # Base height of the image that will be created on updates. This number is the size of the
 # member standings section in pixels
-IMAGE_BASE_HEIGHT = 218
+# IMAGE_BASE_HEIGHT = 218
+IMAGE_BASE_HEIGHT = 200
 
 # Head of the update image. Includes style
 HTML_HEAD = """
@@ -85,6 +86,11 @@ HTML_HEAD = """
             text-align: center;
         }
 
+        span.hours {
+            display: inline-block;
+            text-align: center;
+        }
+
         .films {
             display: flex;
             height: fit-content;
@@ -123,6 +129,10 @@ HTML_HEAD = """
             color: #00C030;
             height: 2em;
         }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 """
@@ -134,13 +144,13 @@ HTML_STANDINGS_TEMPLATE = """
         {head}
     </head>
     <body>
-        <p>Standings as of {time}</p>
-        <div class="members">
+        <p class="{title_class}">Standings as of {time}</p>
+        <div class="members {memebers_class}">
             {members}
         </div>
-        <hr>
-        <p>Since Last Update</p>
-        <div class="films">
+        <hr class="{hr_class}">
+        <p class="{updates_head_class}">{updates_head}</p>
+        <div class="{updates_class}">
             {updates}
         </div>
     </body>
@@ -153,6 +163,7 @@ HTML_STANDINGS_MEMBER = """
     <span class="place">{place}</span>
     <span class="name">{name}:</span>
     <span class="score">{num_films_watched}</span>
+    <span class="hours {hours_class}">{hours_watched}</span>
     <span class="diff">{films_since_last_update}</span>
 </div>
 """

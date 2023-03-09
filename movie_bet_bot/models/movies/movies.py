@@ -12,6 +12,7 @@ from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.fetchers import fetch_page_body_from_url
 from movie_bet_bot.utils.images import html_to_image
 from movie_bet_bot.utils.utils import map_place
+from movie_bet_bot.models.logger.logger import print
 
 
 class Film:
@@ -335,7 +336,9 @@ class Contest:
         except OSError as e:
             print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 
-    def to_image(self) -> List[str]:
+    def to_image(
+        self, show_last_update: bool = True, show_hours_watched: bool = False
+    ) -> List[str]:
         html_height = constants.IMAGE_BASE_HEIGHT  # height of created image
         html_members = (
             ""  # html str w/ current scores, num of films watched since last update
@@ -345,7 +348,7 @@ class Contest:
             html_films = ""  # html str w/ a member's films watched since last update
             html_films_since_last_update = (
                 f"(+{member.num_films_since_last_update})"
-                if member.num_films_since_last_update > 0
+                if member.num_films_since_last_update > 0 and show_hours_watched
                 else ""
             )
             html_members += constants.HTML_STANDINGS_MEMBER.format(
@@ -353,9 +356,11 @@ class Contest:
                 name=member.name,
                 num_films_watched=member.num_films_watched,
                 films_since_last_update=html_films_since_last_update,
+                hours_class="hidden" if not show_hours_watched else "",
+                hours_watched=f"{member.watchtime / 60:.1f}hrs",
             )
             # skip adding member to update if no films in this update
-            if member.num_films_since_last_update < 1:
+            if member.num_films_since_last_update < 1 or not show_hours_watched:
                 continue
             for film in member._films_since_last_update:
                 html_films += constants.HTML_STANDINGS_UPDATE_FILMS.format(
@@ -365,14 +370,20 @@ class Contest:
             html_updates += constants.HTML_STANDINGS_UPDATE.format(
                 name=member.name, films=html_films
             )
-            html_height += 174
+            html_height += 175
         return html_to_image(
             html=constants.HTML_STANDINGS_TEMPLATE.format(
                 head=constants.HTML_HEAD,
                 time=self.time_last_update.strftime("%m/%d %H:%M"),
                 members=html_members,
                 updates=html_updates,
+                updates_head_class="" if show_last_update else "hidden",
+                updates_head="Since Last Update" if show_last_update else "",
+                updates_class="films" if show_last_update else "hidden",
+                title_class="",
+                memebers_class="",
+                hr_class="films" if show_last_update else "hidden",
             ),
             out="update_image.png",
-            size=(480, html_height + 20),
+            size=(480, html_height + 40 if show_last_update else html_height),
         )
