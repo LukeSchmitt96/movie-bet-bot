@@ -7,6 +7,9 @@ TOKEN: str = os.getenv("DISCORD_TOKEN", default="")
 CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID", default=0))
 DB_PATH: str = os.getenv("DB_PATH", default="")
 
+# The List page Length
+LIST_PAGE_LENGTH = 100
+
 # Class name of the ul element containing the films in a Letterboxd List
 LIST_CLASS_NAME = "poster-list"
 
