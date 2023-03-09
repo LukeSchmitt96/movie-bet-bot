@@ -1,10 +1,15 @@
 import urllib.request as urllib
 from urllib.error import URLError
-from movie_bet_bot.models.logger.logger import print
+from movie_bet_bot.models.logger import print
 from bs4 import BeautifulSoup
 
 
 async def fetch_page_body_from_url(url: str) -> BeautifulSoup:
+    """Get page from a URL.
+
+    :param url: URL of the page to fetch
+    :return: BeautifulSoup of page
+    """
     req = urllib.Request(
         url=url,
         data=None,
