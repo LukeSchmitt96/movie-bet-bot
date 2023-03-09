@@ -91,9 +91,7 @@ class FilmList:
                 resp = search.movie(query=film_title, year=film_year)
                 if "results" in resp:
                     film_info = tmdb.Movies(int(resp["results"][0]["id"])).info()
-                    film.poster_url = (
-                        constants.POSTERPATH_URL_BASE + film_info["poster_path"]
-                    )
+                    film.poster_url = constants.POSTERPATH_URL_BASE + film_info["poster_path"]
                     film.runtime = int(film_info["runtime"])
             films.add(film)
         return FilmList(url, films)
@@ -250,9 +248,7 @@ class Contest:
             )
         return contests
 
-    async def update(
-        self, get_film_details: bool = True, save_on_update: bool = True
-    ) -> bool:
+    async def update(self, get_film_details: bool = True, save_on_update: bool = True) -> bool:
         print("Updating...")
         is_changed = False
         for member in self.members:
@@ -263,17 +259,13 @@ class Contest:
             )
             if member.list != member_last.list:
                 is_changed = True
-                member.num_films_since_last_update = len(member.list) - len(
-                    member_last.list
-                )
+                member.num_films_since_last_update = len(member.list) - len(member_last.list)
                 member.films_in_update(member_last.list.films)
             else:
                 member.num_films_since_last_update = 0
 
         # sort members by number of films watched first and watchtime second
-        self.members.sort(
-            key=lambda x: (x.num_films_watched, x.watchtime), reverse=True
-        )
+        self.members.sort(key=lambda x: (x.num_films_watched, x.watchtime), reverse=True)
 
         if save_on_update and is_changed:
             self.save()
@@ -340,9 +332,7 @@ class Contest:
         self, show_last_update: bool = True, show_hours_watched: bool = False
     ) -> List[str]:
         html_height = constants.IMAGE_BASE_HEIGHT  # height of created image
-        html_members = (
-            ""  # html str w/ current scores, num of films watched since last update
-        )
+        html_members = ""  # html str w/ current scores, num of films watched since last update
         html_updates = ""  # html str w/ all member's films watched since last update
         for member in self.members:
             html_films = ""  # html str w/ a member's films watched since last update

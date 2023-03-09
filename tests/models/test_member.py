@@ -37,6 +37,4 @@ class Test_Member(unittest.TestCase):
         assert test_member.to_dict() == member_dict
 
     def test_repr(self):
-        assert repr(test_member) == (
-            f"Member(name={test_member.name},list={test_member.list})"
-        )
+        assert repr(test_member) == (f"Member(name={test_member.name},list={test_member.list})")
