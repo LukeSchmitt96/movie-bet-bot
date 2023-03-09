@@ -317,7 +317,7 @@ files = [
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
@@ -627,7 +627,7 @@ regex = ["regex"]
 name = "mslex"
 version = "0.3.0"
 description = "shlex for windows"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -801,7 +801,7 @@ virtualenv = ">=20.10.0"
 name = "psutil"
 version = "5.9.4"
 description = "Cross-platform lib for process and system monitoring in Python."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
@@ -1045,7 +1045,7 @@ files = [
 name = "taskipy"
 version = "1.10.3"
 description = "tasks runner for python projects"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6,<4.0"
 files = [
@@ -1078,7 +1078,7 @@ requests = "*"
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -1247,4 +1247,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "08ff107ccc3d7f531507b71412d4f38bb3e0cb710c1005cbc699efd9aff1729c"
+content-hash = "deb33ee7fb2394e898bfed7fa359d671a429448fc9884863ae57164fb87f15a3"
