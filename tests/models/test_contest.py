@@ -32,9 +32,7 @@ contest_dict: Final = {
 class Test_Contest(unittest.TestCase):
     def test_from_config(self):
         with open(
-            os.path.join(
-                os.path.dirname(__file__), "..", "resources", "test_config.yaml"
-            )
+            os.path.join(os.path.dirname(__file__), "..", "resources", "test_config.yaml")
         ) as test_conf:
             saved_data = yaml.safe_load(test_conf)
         movies.Contest.from_config(saved_data.get("contests"))[0]

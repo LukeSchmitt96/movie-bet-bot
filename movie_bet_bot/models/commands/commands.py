@@ -15,14 +15,10 @@ def create_help(bot):
     async def help(interaction: discord.Interaction):
         Logger.info("Running Help Command")
         # creates a new embed
-        embed: discord.Embed = discord.Embed(
-            description="List of all commands:", color=0x000000
-        )
+        embed: discord.Embed = discord.Embed(description="List of all commands:", color=0x000000)
         for command in bot.commands:
             # adds the embed field for the command
-            embed.add_field(
-                name=command["name"], value=command["description"], inline=False
-            )
+            embed.add_field(name=command["name"], value=command["description"], inline=False)
         # sends the embed
         Logger.info("Sending Help Embed")
         await interaction.response.send_message(embed=embed)

@@ -49,6 +49,4 @@ class Test_FilmList(unittest.TestCase):
         self.assertEqual(test_list.to_dict(), list_dict)
 
     def test_repr(self):
-        self.assertEqual(
-            repr(test_list), f"FilmList(url={test_list.url},films={test_list.films})"
-        )
+        self.assertEqual(repr(test_list), f"FilmList(url={test_list.url},films={test_list.films})")
