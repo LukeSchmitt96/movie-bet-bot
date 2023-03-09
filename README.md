@@ -57,7 +57,6 @@ contests:
 
 ```bash
 DISCORD_TOKEN="..."
-DISCORD_GUILD_ID="..."
 DISCORD_CHANNEL_ID="..."
 TMDB_API_KEY="..."
 DB_PATH="..."
