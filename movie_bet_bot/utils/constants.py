@@ -145,7 +145,7 @@ HTML_STANDINGS_TEMPLATE = """
     </head>
     <body>
         <p class="{title_class}">Standings as of {time}</p>
-        <div class="members {memebers_class}">
+        <div class="members {members_class}">
             {members}
         </div>
         <hr class="{hr_class}">
