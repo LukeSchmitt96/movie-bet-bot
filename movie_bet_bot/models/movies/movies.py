@@ -10,7 +10,6 @@ from bs4 import BeautifulSoup
 
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.fetchers import fetch_page_body_from_url
-from movie_bet_bot.utils.images import html_to_image
 from movie_bet_bot.utils.utils import map_place
 from movie_bet_bot.models.logger.logger import print
 
@@ -475,7 +474,9 @@ class Contest:
         except OSError as e:
             print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 
-    def to_image(self, show_last_update: bool = True, show_watchtime: bool = False) -> List[str]:
+    def to_image_html(
+        self, show_last_update: bool = True, show_watchtime: bool = False
+    ) -> List[str]:
         """
         Create image from contest standings.
 
@@ -522,8 +523,8 @@ class Contest:
             )
             # add 175px to height of image per member with film update
             html_height += 175
-        # format standings template
-        html = constants.HTML_STANDINGS_TEMPLATE.format(
+        # return formatted standings template
+        image_html = constants.HTML_STANDINGS_TEMPLATE.format(
             head=constants.HTML_HEAD,
             time=self.time_last_update.strftime("%m/%d %H:%M"),
             members=html_members,
@@ -535,8 +536,4 @@ class Contest:
             members_class="",
             hr_class="films" if show_last_update else "hidden",
         )
-        return html_to_image(
-            html=html,
-            out="update_image.png",
-            size=(480, html_height + 40 if show_last_update else html_height),
-        )
+        return (image_html, (480, html_height + 40 if show_last_update else html_height))

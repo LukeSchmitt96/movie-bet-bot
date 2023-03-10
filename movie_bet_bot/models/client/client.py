@@ -7,6 +7,7 @@ from movie_bet_bot.models.commands import create_help, create_standings
 from movie_bet_bot.models.logger import print
 from movie_bet_bot.models.movies import movies
 from movie_bet_bot.utils import constants
+from movie_bet_bot.utils.images import html_to_image
 
 INTENTS = discord.Intents.default()
 
@@ -62,7 +63,10 @@ class MovieBetBot(discord.Client):
     async def contest_message_task(self) -> None:
         """Update contest and send its update image."""
         if await self.contest.update():
-            await self.send_message(filepath=self.contest.to_image())
+            (image_html, image_size) = self.contest.to_image_html()
+            await self.send_message(
+                filepath=html_to_image(html=image_html, out="update_image.png", size=image_size)
+            )
 
     async def task_setup(self) -> None:
         """Set up tasks."""
