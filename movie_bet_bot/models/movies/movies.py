@@ -494,7 +494,7 @@ class Contest:
             # set number of films watched since last update if >0 and if watchtime should be shown
             html_films_since_last_update = (
                 f"(+{member.num_films_since_last_update})"
-                if member.num_films_since_last_update > 0 and show_watchtime
+                if member.num_films_since_last_update > 0 and show_last_update
                 else ""
             )
             # format member section of standings template to add member
