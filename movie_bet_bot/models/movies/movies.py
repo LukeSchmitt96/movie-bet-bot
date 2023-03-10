@@ -110,33 +110,40 @@ class FilmList:
         :return: FilmList object
         """
         films: Set[Film] = set()
-        # get raw list page body
-        list_page = await fetch_page_body_from_url(url)
-        # get all li nodes with the film class name
-        list_result = list_page.find_all("li", class_=constants.FILM_CLASS_NAME)
-        li: BeautifulSoup
-        for li in list_result:
-            # get film title, year, and url from the li node
-            film_title = li.a.text
-            film_year = li.find_all("small", {"class": "metadata"})[0].a.text.strip()
-            film_url = constants.LB_URL_ROOT + li.a["href"]
-            film = Film(film_title, film_url)
-            # try to get rating if one is given, pass otherwise
-            try:
-                film.rating = li.find_all("span", {"class": "rating"})[0].text.strip()
-            except (AttributeError, IndexError):
-                pass
-            if get_film_details:
-                # if getting film details, create a TMDB API search using film title and year
-                search = tmdb.Search()
-                resp = search.movie(query=film_title, year=film_year)
-                if "results" in resp:
-                    # if we get results from TMDB query, get poster path and runtime
-                    film_info = tmdb.Movies(int(resp["results"][0]["id"])).info()
-                    film.poster_url = constants.POSTERPATH_URL_BASE + film_info["poster_path"]
-                    film.runtime = int(film_info["runtime"])
-            # add this film to set
-            films.add(film)
+        page_number: int = 1
+        page_url: str = url + "page/"
+        while True:
+            print(f"Fetching film list page_url {page_url}{str(page_number)}/")
+            # get raw list page body
+            list_page = await fetch_page_body_from_url(page_url + str(page_number) + "/")
+            # get all li nodes with the film class name
+            list_result = list_page.find_all("li", class_=constants.FILM_CLASS_NAME)
+            li: BeautifulSoup
+            for li in list_result:
+                # get film title, year, and url from the li node
+                film_title = li.a.text
+                film_year = li.find_all("small", {"class": "metadata"})[0].a.text.strip()
+                film_url = constants.LB_URL_ROOT + li.a["href"]
+                film = Film(film_title, film_url)
+                # try to get rating if one is given, pass otherwise
+                try:
+                    film.rating = li.find_all("span", {"class": "rating"})[0].text.strip()
+                except (AttributeError, IndexError):
+                    pass
+                if get_film_details:
+                    # if getting film details, create a TMDB API search using film title and year
+                    search = tmdb.Search()
+                    resp = search.movie(query=film_title, year=film_year)
+                    if "results" in resp:
+                        # if we get results from TMDB query, get poster path and runtime
+                        film_info = tmdb.Movies(int(resp["results"][0]["id"])).info()
+                        film.poster_url = constants.POSTERPATH_URL_BASE + film_info["poster_path"]
+                        film.runtime = int(film_info["runtime"])
+                # add this film to set
+                films.add(film)
+            page_number += 1
+            if len(list_result) < constants.LIST_PAGE_LENGTH:
+                break
         return FilmList(url, films)
 
     @property
@@ -500,7 +507,7 @@ class Contest:
                 hours_watched=f"{member.watchtime / 60:.1f}hrs",
             )
             # skip adding member, films to update section if no films in this update
-            if member.num_films_since_last_update < 1 or not show_watchtime:
+            if member.num_films_since_last_update < 1 or not show_last_update:
                 continue
             # add films to update section's films
             for film in member._films_since_last_update:
