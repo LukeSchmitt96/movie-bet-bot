@@ -8,10 +8,11 @@ import tmdbsimple as tmdb
 import yaml
 from bs4 import BeautifulSoup
 
+from movie_bet_bot.models.logger import print
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.fetchers import fetch_page_body_from_url
+import movie_bet_bot.utils.images as images
 from movie_bet_bot.utils.utils import map_place
-from movie_bet_bot.models.logger.logger import print
 
 
 class Film:
@@ -492,50 +493,20 @@ class Contest:
         # html str w/ all member's films watched since last update
         html_updates = ""
         for member in self.members:
-            # html str w/ a member's films watched since last update
-            html_films = ""
-            # set number of films watched since last update if >0 and if watchtime should be shown
-            html_films_since_last_update = (
-                f"(+{member.num_films_since_last_update})"
-                if member.num_films_since_last_update > 0 and show_last_update
-                else ""
+            (html_member, html_update) = images.build_html_update_block_from_member(
+                member=member,
+                show_last_update=show_last_update,
+                show_watchtime=show_watchtime,
             )
-            # format member section of standings template to add member
-            html_members += constants.HTML_STANDINGS_MEMBER.format(
-                place=map_place(member.place),
-                name=member.name,
-                num_films_watched=member.num_films_watched,
-                films_since_last_update=html_films_since_last_update,
-                hours_class="hidden" if not show_watchtime else "",
-                hours_watched=f"{member.watchtime / 60:.1f}hrs",
-            )
-            # skip adding member, films to update section if no films in this update
-            if member.num_films_since_last_update < 1 or not show_last_update:
-                continue
-            # add films to update section's films
-            for film in member._films_since_last_update:
-                # format film update template to add films
-                html_films += constants.HTML_STANDINGS_UPDATE_FILMS.format(
-                    poster=film.poster_url,
-                    rating=film.rating,
-                )
-            # add this member to update section of standings template
-            html_updates += constants.HTML_STANDINGS_UPDATE.format(
-                name=member.name, films=html_films
-            )
+            html_members += html_member
+            html_updates += html_update
             # add 175px to height of image per member with film update
             html_height += 175
         # return formatted standings template
-        image_html = constants.HTML_STANDINGS_TEMPLATE.format(
-            head=constants.HTML_HEAD,
+        image_html = images.build_html_standings_block(
             time=self.time_last_update.strftime("%m/%d %H:%M"),
             members=html_members,
             updates=html_updates,
-            updates_head_class="" if show_last_update else "hidden",
-            updates_head="Since Last Update" if show_last_update else "",
-            updates_class="films" if show_last_update else "hidden",
-            title_class="",
-            members_class="",
-            hr_class="films" if show_last_update else "hidden",
+            show_update=show_last_update,
         )
         return (image_html, (480, html_height + 40 if show_last_update else html_height))
