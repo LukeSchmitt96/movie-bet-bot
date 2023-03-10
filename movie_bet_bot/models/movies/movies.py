@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 from datetime import datetime
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Set, Tuple, Union
 
 import tmdbsimple as tmdb
 import yaml
@@ -476,12 +476,14 @@ class Contest:
 
     def to_image_html(
         self, show_last_update: bool = True, show_watchtime: bool = False
-    ) -> List[str]:
+    ) -> Tuple[str, Tuple[int, int]]:
         """
         Create image from contest standings.
 
         :param show_last_update: if full update should be shown instead of just the standings
         :param show_watchtime: if member watchtime should be shown
+        :return: tuple where the first element is a string containing the raw html used to generate
+            an image and the second element is a tuple containing the size of the image
         """
         # height of created image
         html_height = constants.IMAGE_BASE_HEIGHT
