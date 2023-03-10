@@ -507,7 +507,7 @@ class Contest:
                 hours_watched=f"{member.watchtime / 60:.1f}hrs",
             )
             # skip adding member, films to update section if no films in this update
-            if member.num_films_since_last_update < 1 or not show_watchtime:
+            if member.num_films_since_last_update < 1 or not show_last_update:
                 continue
             # add films to update section's films
             for film in member._films_since_last_update:
