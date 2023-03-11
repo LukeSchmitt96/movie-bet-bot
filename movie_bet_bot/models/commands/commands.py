@@ -1,5 +1,7 @@
 import discord
+
 from movie_bet_bot.models.logger.logger import Logger
+from movie_bet_bot.utils.images import html_to_image
 
 
 def create_help(bot: discord.Client):
@@ -60,9 +62,11 @@ def create_standings(bot):
                 Logger.info("Updating Standings")
                 update_standings_first = await bot.bot.contest.update()
             # get the image of the standings
-            filepath = bot.contest.to_image(update_standings_first, show_hours_watched)
-            # create a new discord.File from filepath
-            file = discord.File(filepath)
+            (image_html, image_size) = bot.contest.to_image_html(
+                update_standings_first, show_hours_watched
+            )
+            # create a new discord.File from html_to_image-provided filepath
+            file = discord.File(html_to_image(html=image_html, size=image_size))
             if file is not None:
                 # sends the file
                 Logger.info("Sending Standings File")
