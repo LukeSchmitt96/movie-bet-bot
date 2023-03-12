@@ -5,6 +5,12 @@ from html2image import Html2Image
 import movie_bet_bot.models.movies.movies as movies
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.utils import map_place
+from movie_bet_bot.models.logger import print
+
+FLAGS = [
+    "--default-background-color=000000",
+    "--hide-scrollbars",
+]
 
 
 def html_to_image(html: str, out: str = None, size: Tuple[int] = (480, 800)) -> str:
@@ -13,10 +19,14 @@ def html_to_image(html: str, out: str = None, size: Tuple[int] = (480, 800)) -> 
 
     :param html: HTML to render as an image
     :param out: save location of image
-    :size: size of rendered image as a tuple
+    :param size: size of rendered image as a tuple
     :return: filepath of generated image
     """
-    return Html2Image().screenshot(html_str=html, save_as=out, size=size)[0]
+    image_filepath = Html2Image(browser="chrome", custom_flags=FLAGS).screenshot(
+        html_str=html, save_as=out, size=size
+    )[0]
+    print(f"Generated image from html with size {size}. File located at '{image_filepath}'.")
+    return image_filepath
 
 
 def build_html_update_block_from_member(

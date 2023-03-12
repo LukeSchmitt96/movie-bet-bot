@@ -55,15 +55,22 @@ class MovieBetBot(discord.Client):
         :param msg: message to send to channel
         :param filepath: absolute path to file to send to channel
         """
+        print(f"Sending message with text '{msg}' and file '{filepath}'.")
         # if given filepath, create discord.File from it
         file = discord.File(filepath) if filepath is not None else None
         # send message, file to channel
         await self.channel.send(msg, file=file)
+        print("Message sent.")
 
     async def contest_message_task(self) -> None:
         """Update contest and send its update image."""
         if await self.contest.update():
+            print(
+                "Contest has had new change since last update. "
+                "Will generate update image and send message."
+            )
             (image_html, image_size) = self.contest.to_image_html()
+            print(f"Generated image with html length {len(image_html)} and size {image_size}.")
             await self.send_message(
                 filepath=html_to_image(html=image_html, out="update_image.png", size=image_size)
             )
