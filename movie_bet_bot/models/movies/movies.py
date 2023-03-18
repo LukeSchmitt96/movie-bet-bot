@@ -278,7 +278,7 @@ class Member:
 
         :return: number of films watched since last contest update
         """
-        return len(self._films_since_last_update)
+        return len(self.films_watched_since_last_update)
 
     def update_films(self, update: Set[Film]) -> None:
         """
@@ -406,7 +406,7 @@ class Contest:
                 # if member is different than original, contest is changed
                 is_changed = True
                 # update films watched since last update
-                member.update_films(member_last.list.films)
+            member.update_films(member_last.list.films)
 
         # sort members by number of films watched first and watchtime second
         self.members.sort(key=lambda x: (x.num_films_watched, x.watchtime), reverse=True)
@@ -416,11 +416,11 @@ class Contest:
         else:
             print("No change since last update.")
 
-        self.update_standings()
+        self.print_standings()
         return is_changed
 
-    def update_standings(self) -> None:
-        """Update string representation of standings and print to log."""
+    def print_standings(self) -> None:
+        """Log string representation of standings."""
         self.time_last_update = datetime.now()
         self.standings_string = (
             f'\nStandings as of {self.time_last_update.strftime("%m/%d %H:%M")}:\n'
