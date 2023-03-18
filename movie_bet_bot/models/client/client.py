@@ -42,6 +42,7 @@ class MovieBetBot(discord.Client):
         print(f"Logged in as {self.user}")
         # get the channel with the channel ID
         self.channel = self.get_channel(constants.CHANNEL_ID)
+        print(f"Running in server '{self.channel.guild.name}', channel '{self.channel.name}'.")
         # set up task look
         self.loop.create_task(self.task_setup())
         await self.sync_commands()
