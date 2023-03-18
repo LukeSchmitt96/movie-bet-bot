@@ -63,3 +63,15 @@ class Test_Contest_AsyncIO(unittest.IsolatedAsyncioTestCase):
         member_name_spans = member_div_soup.find_all("span", {"class": "name"})
         assert "name2:" in member_name_spans[0]
         assert "name1:" in member_name_spans[1]
+
+    async def test_updates(self):
+        c = copy.deepcopy(test_c)
+        assert (
+            c.members[0].contest_url
+            == "https://letterboxd.com/moviebetbot/list/test_list_1/detail/"
+        )
+        await c.update(get_film_details=False, save_on_update=False)
+        assert c.members[1].num_films_since_last_update == 1
+        c.members[1].contest_url = "https://letterboxd.com/moviebetbot/list/test_list_2/detail/"
+        await c.update(get_film_details=False, save_on_update=False)
+        assert c.members[1].num_films_since_last_update == 1

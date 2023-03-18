@@ -278,7 +278,7 @@ class Member:
 
         :return: number of films watched since last contest update
         """
-        return len(self._films_since_last_update)
+        return len(self.films_watched_since_last_update)
 
     def update_films(self, update: Set[Film]) -> None:
         """
@@ -390,6 +390,9 @@ class Contest:
         is_changed = False
         # iterate though members in this contest
         for member in self.members:
+            print(
+                f"Member '{member.name}' has seen {member.num_films_watched} films before update."
+            )
             # create a copy of the member for comparison
             member_last = copy.deepcopy(member)
             # set member list from their contest url
@@ -397,11 +400,13 @@ class Contest:
                 url=member_last.contest_url,
                 get_film_details=get_film_details,
             )
+            print(f"Member '{member.name}' has seen {member.num_films_watched} films after update.")
             if member.list != member_last.list:
+                print(f"Member '{member.name}' has seen a new film.")
                 # if member is different than original, contest is changed
                 is_changed = True
                 # update films watched since last update
-                member.update_films(member_last.list.films)
+            member.update_films(member_last.list.films)
 
         # sort members by number of films watched first and watchtime second
         self.members.sort(key=lambda x: (x.num_films_watched, x.watchtime), reverse=True)
@@ -411,14 +416,14 @@ class Contest:
         else:
             print("No change since last update.")
 
-        self.update_standings()
+        self.print_standings()
         return is_changed
 
-    def update_standings(self) -> None:
-        """Update string representation of standings and print to log."""
+    def print_standings(self) -> None:
+        """Log string representation of standings."""
         self.time_last_update = datetime.now()
         self.standings_string = (
-            f'Standings as of {self.time_last_update.strftime("%m/%d %H:%M")}:\n'
+            f'\nStandings as of {self.time_last_update.strftime("%m/%d %H:%M")}:\n'
         )
         place = 1
         for member in self.members:
@@ -486,6 +491,7 @@ class Contest:
         :return: tuple where the first element is a string containing the raw html used to generate
             an image and the second element is a tuple containing the size of the image
         """
+        print(f"Generating image of this contest with {show_last_update=}, {show_watchtime=}.")
         # height of created image
         html_height = constants.IMAGE_BASE_HEIGHT
         # html str w/ current scores, num of films watched since last update
@@ -493,6 +499,7 @@ class Contest:
         # html str w/ all member's films watched since last update
         html_updates = ""
         for member in self.members:
+            print(f"Generating image component for member '{member.name}'.")
             (html_member, html_update) = images.build_html_update_block_from_member(
                 member=member,
                 show_last_update=show_last_update,
@@ -500,9 +507,10 @@ class Contest:
             )
             html_members += html_member
             html_updates += html_update
-            # add 175px to height of image per member with film update
-            html_height += 175
-        # return formatted standings template
+            if member.num_films_since_last_update > 0 and show_last_update:
+                print(f"Member '{member.name}' has seen new films. Adding 175px to image height.")
+                # add 175px to height of image per member with film update
+                html_height += 175
         image_html = images.build_html_standings_block(
             time=self.time_last_update.strftime("%m/%d %H:%M"),
             members=html_members,
