@@ -66,7 +66,9 @@ def create_standings(bot):
                 update_standings_first, show_hours_watched
             )
             # create a new discord.File from html_to_image-provided filepath
-            file = discord.File(html_to_image(html=image_html, size=image_size))
+            file = discord.File(
+                html_to_image(html=image_html, out="update_image.png", size=image_size)
+            )
             if file is not None:
                 # sends the file
                 Logger.info("Sending Standings File")
