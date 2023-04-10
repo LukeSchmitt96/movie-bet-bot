@@ -28,6 +28,7 @@ class MovieBetBot(discord.Client):
 
     def __init__(self, contest: movies.Contest, **options: Any) -> None:
         super().__init__(intents=INTENTS, **options)
+        self._setup = False
         self.contest = contest
         # set Discord's command tree. This is used to create and sync commands
         self.command_tree = discord.app_commands.CommandTree(self)
@@ -44,9 +45,10 @@ class MovieBetBot(discord.Client):
         self.channel = self.get_channel(constants.CHANNEL_ID)
         print(f"Running in server '{self.channel.guild.name}', channel '{self.channel.name}'.")
         # set up task look
-        self.loop.create_task(self.task_setup())
+        if not self._setup:
+            self.loop.create_task(self.task_setup())
         await self.sync_commands()
-        # update standings
+        # update standings on startup
         await self.contest_message_task()
 
     async def send_message(self, msg: str = None, filepath: str = None) -> None:
@@ -84,6 +86,7 @@ class MovieBetBot(discord.Client):
         scheduler.add_job(self.contest_message_task, "cron", hour="*")
         # start scheduler
         scheduler.start()
+        self._setup = True
 
     def clear_commands(self) -> None:
         """Clear all commands from Discord's servers."""
