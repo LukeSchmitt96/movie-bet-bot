@@ -53,13 +53,13 @@ contests:
   name: CONTEST_NAME
 ```
 
-5. Configure bot's `<project_root>/.env` file
+5. Configure bot's `<project_root>/.env` file. See the [example environment file](./.env.example) for an template.
 
 ```bash
+DB_PATH="..."
 DISCORD_TOKEN="..."
 DISCORD_CHANNEL_ID="..."
 TMDB_API_KEY="..."
-DB_PATH="..."
 ```
 
 6. (Optional) Run tests, pre-commit hooks
