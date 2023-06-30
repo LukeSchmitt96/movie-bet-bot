@@ -134,11 +134,21 @@ class FilmList:
                     # if getting film details, create a TMDB API search using film title and year
                     search = tmdb.Search()
                     resp = search.movie(query=film_title, year=film_year)
-                    if "results" in resp:
-                        # if we get results from TMDB query, get poster path and runtime
-                        film_info = tmdb.Movies(int(resp["results"][0]["id"])).info()
-                        film.poster_url = constants.POSTERPATH_URL_BASE + film_info["poster_path"]
-                        film.runtime = int(film_info["runtime"])
+                    try:
+                        if "results" in resp:
+                            # if we get results from TMDB query, get poster path and runtime
+                            film_info = tmdb.Movies(int(resp["results"][0]["id"])).info()
+                            film.poster_url = (
+                                constants.POSTERPATH_URL_BASE + film_info["poster_path"]
+                            )
+                            film.runtime = int(film_info["runtime"])
+                    except IndexError:
+                        print(
+                            f"Film '{film.title}' is unavailable on TMDB. Will not fetch poster or"
+                            " runtime"
+                        )
+                        film.poster_url = ""
+                        film.runtime = 0
                 # add this film to set
                 films.add(film)
             page_number += 1
