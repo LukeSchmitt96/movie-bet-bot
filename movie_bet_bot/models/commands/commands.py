@@ -1,6 +1,6 @@
 import discord
 
-from movie_bet_bot.models.logger.logger import Logger
+from movie_bet_bot.models.logger.logger import print
 from movie_bet_bot.utils.images import html_to_image
 
 
@@ -20,14 +20,14 @@ def create_help(bot: discord.Client):
     @bot.command_tree.command(name=name, description=description)
     async def help(interaction: discord.Interaction):
         """Do help command callback."""
-        Logger.info("Running Help Command")
+        print("Running Help Command")
         # create a new embed
         embed: discord.Embed = discord.Embed(description="List of all commands:", color=0x000000)
         for command in bot.commands:
             # add the embed field for the command
             embed.add_field(name=command["name"], value=command["description"], inline=False)
         # send the embed
-        Logger.info("Sending Help Embed")
+        print("Sending Help Embed")
         await interaction.response.send_message(embed=embed)
 
     # add a command to the list of commands
@@ -54,12 +54,12 @@ def create_standings(bot):
         show_hours_watched: bool = False,
     ):
         """Do standings command callback"""
-        Logger.info("Running Standings Command")
+        print("Running Standings Command")
         error: bool = True
         if bot.contest is not None:
             # update the standings if update_standings_first is true
             if update_standings_first:
-                Logger.info("Updating Standings")
+                print("Updating Standings")
                 update_standings_first = await bot.bot.contest.update()
             # get the image of the standings
             (image_html, image_size) = bot.contest.to_image_html(
@@ -71,11 +71,11 @@ def create_standings(bot):
             )
             if file is not None:
                 # sends the file
-                Logger.info("Sending Standings File")
+                print("Sending Standings File")
                 error = False
                 await interaction.response.send_message(file=file)
         if error:
-            Logger.info("Could not get standings")
+            print("Could not get standings")
             await interaction.response.send_message("Could not get standings")
 
     # add a command to the list of commands
