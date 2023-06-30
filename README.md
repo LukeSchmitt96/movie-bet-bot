@@ -53,7 +53,7 @@ contests:
   name: CONTEST_NAME
 ```
 
-5. Configure bot's `<project_root>/.env` file. See the [example environment file](./.env.example) for an template.
+5. Configure bot's `<project_root>/.env` file. See the [example environment file](./.env.example) for a template.
 
 ```bash
 DB_PATH="..."
