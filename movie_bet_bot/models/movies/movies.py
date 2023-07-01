@@ -101,12 +101,17 @@ class FilmList:
         self.films = films
 
     @staticmethod
-    async def from_url(url: str, get_film_details: bool = True) -> FilmList:
+    async def from_url(
+        url: str,
+        get_film_details: bool = True,
+        current_list: FilmList = None,
+    ) -> FilmList:
         """
         Create a list from a Letterboxd URL.
 
         :param url: Letterboxd URL of the list to create
         :param get_film_details: if details from TMDB should be retrieved
+        :param current_list: FilmList to search through for previously seen films
         :return: FilmList object
         """
         films: Set[Film] = set()
@@ -130,7 +135,12 @@ class FilmList:
                     film.rating = li.find_all("span", {"class": "rating"})[0].text.strip()
                 except (AttributeError, IndexError):
                     pass
-                if get_film_details:
+
+                # check if film is already in current_list
+                film_already_in_list = current_list is not None and film in current_list.films
+
+                # get detailed info from TMDB if want full details and not already in list
+                if get_film_details and not film_already_in_list:
                     # if getting film details, create a TMDB API search using film title and year
                     search = tmdb.Search()
                     resp = search.movie(query=film_title, year=film_year)
@@ -400,18 +410,16 @@ class Contest:
         is_changed = False
         # iterate though members in this contest
         for member in self.members:
-            print(
-                f"Member '{member.name}' has seen {member.num_films_watched} films before update."
-            )
             # create a copy of the member for comparison
             member_last = copy.deepcopy(member)
             # set member list from their contest url
-            member.list = await FilmList.from_url(
+            list_member_current = await FilmList.from_url(
                 url=member_last.contest_url,
                 get_film_details=get_film_details,
+                current_list=member_last.list,
             )
-            print(f"Member '{member.name}' has seen {member.num_films_watched} films after update.")
-            if member.list != member_last.list:
+            if member.list != list_member_current:
+                member.list = list_member_current
                 print(f"Member '{member.name}' has seen a new film.")
                 # if member is different than original, contest is changed
                 is_changed = True
