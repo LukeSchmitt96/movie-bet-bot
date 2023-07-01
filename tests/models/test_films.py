@@ -11,6 +11,7 @@ film_dict: Final = {
     "url": film1.url,
     "runtime": film1.runtime,
     "poster_url": film1.poster_url,
+    "timestamp": film1.timestamp,
 }
 
 
