@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 from datetime import datetime
+import time
 from typing import Dict, List, Set, Tuple, Union
 
 import tmdbsimple as tmdb
@@ -32,17 +33,22 @@ class Film:
     # film's rating given by user in starts
     _rating: str = ""
 
+    # when a film was watched
+    timestamp: float = 0.0
+
     def __init__(
         self,
         title: str,
         url: str,
         runtime: int = -1,
         poster_url: str = "",
+        timestamp: int = 0.0,
     ) -> None:
         self.title = title
         self.url = url
         self.runtime = runtime
         self.poster_url = poster_url
+        self.timestamp = timestamp
 
     def to_dict(self) -> Dict[str, str]:
         """
@@ -55,6 +61,7 @@ class Film:
             "url": self.url,
             "runtime": self.runtime,
             "poster_url": self.poster_url,
+            "timestamp": self.timestamp,
         }
 
     @property
@@ -159,6 +166,7 @@ class FilmList:
                         )
                         film.poster_url = ""
                         film.runtime = 0
+                    film.timestamp = time.time()
                 # add this film to set
                 films.add(film)
             page_number += 1
@@ -383,6 +391,7 @@ class Contest:
                                     url=film["url"],
                                     runtime=film["runtime"],
                                     poster_url=film["poster_url"],
+                                    timestamp=film["timestamp"],
                                 )
                                 for film in member_conf["list"]["films"]
                             ]

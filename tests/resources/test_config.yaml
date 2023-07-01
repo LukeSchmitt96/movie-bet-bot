@@ -6,14 +6,17 @@ contests:
       films:
       - poster_url: poster_url1
         runtime: 1
+        timestamp: 0.0
         title: film_title1
         url: film_url1
       - poster_url: poster_url2
         runtime: 2
+        timestamp: 0.0
         title: film_title2
         url: film_url2
       - poster_url: poster_url3
         runtime: 3
+        timestamp: 0.0
         title: film_title3
         url: film_url3
       url: contest_url1
@@ -26,10 +29,12 @@ contests:
       films:
       - poster_url: poster_url4
         runtime: 4
+        timestamp: 0.0
         title: film_title4
         url: film_url4
       - poster_url: poster_url5
         runtime: 5
+        timestamp: 0.0
         title: film_title5
         url: film_url5
       url: contest_url2
