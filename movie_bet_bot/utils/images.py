@@ -5,7 +5,6 @@ from html2image import Html2Image
 import movie_bet_bot.models.movies.movies as movies
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.utils import map_place
-from movie_bet_bot.models.logger import print
 
 FLAGS = [
     "--default-background-color=000000",

@@ -4,7 +4,6 @@ import discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from movie_bet_bot.models.commands import create_help, create_standings
-from movie_bet_bot.models.logger import print
 from movie_bet_bot.models.movies import movies
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.images import html_to_image
