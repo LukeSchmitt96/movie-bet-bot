@@ -111,16 +111,16 @@ class FilmList:
         url: str,
         get_film_details: bool = True,
         current_list: FilmList = None,
-    ) -> FilmList:
+    ) -> Set[Film]:
         """
         Create a list from a Letterboxd URL.
 
         :param url: Letterboxd URL of the list to create
         :param get_film_details: if details from TMDB should be retrieved
         :param current_list: FilmList to search through for previously seen films
-        :return: FilmList object
+        :return: Set of new films watched
         """
-        films: Set[Film] = set()
+        new_films: Set[Film] = set()
         page_number: int = 1
         page_url: str = url + "page/"
         while True:
@@ -145,6 +145,9 @@ class FilmList:
                 # check if film is already in current_list
                 film_already_in_list = current_list is not None and film in current_list.films
 
+                if not film_already_in_list:
+                    new_films.add(film)
+
                 # get detailed info from TMDB if want full details and not already in list
                 if get_film_details and not film_already_in_list:
                     # if getting film details, create a TMDB API search using film title and year
@@ -166,12 +169,10 @@ class FilmList:
                         film.poster_url = ""
                         film.runtime = 0
                     film.timestamp = time.time()
-                # add this film to set
-                films.add(film)
             page_number += 1
             if len(list_result) < constants.LIST_PAGE_LENGTH:
                 break
-        return FilmList(url, films)
+        return new_films
 
     @property
     def film_titles(self) -> List[str]:
@@ -239,7 +240,7 @@ class Member:
     name: str
 
     # member's list of films
-    list: FilmList = FilmList("")
+    filmlist: FilmList = FilmList("", set())
 
     # number of films watched since last contest update
     _num_films_since_last_update: int = 0
@@ -255,12 +256,12 @@ class Member:
         name: str,
         contest_url: str,
         profile_url: str,
-        list: FilmList = FilmList(""),
+        filmlist: FilmList = FilmList("", set()),
     ) -> None:
         self.name = name
         self.contest_url = contest_url
         self.profile_url = profile_url
-        self.list = list
+        self.filmlist = filmlist
 
     @property
     def place(self) -> int:
@@ -287,7 +288,7 @@ class Member:
 
         :return: total number of films watched
         """
-        return len(self.list)
+        return len(self.filmlist)
 
     @property
     def watchtime(self) -> int:
@@ -296,7 +297,7 @@ class Member:
 
         :return: total watchtime
         """
-        return sum([film.runtime for film in self.list.films])
+        return sum([film.runtime for film in self.filmlist.films])
 
     @property
     def num_films_since_last_update(self) -> int:
@@ -313,7 +314,7 @@ class Member:
 
         :param update: Set of Films in update
         """
-        self._films_since_last_update = self.list.films - update
+        self._films_since_last_update = self.filmlist.films - update
 
     @property
     def films_watched_since_last_update(self) -> Set[Film]:
@@ -334,16 +335,16 @@ class Member:
             "contest_url": self.contest_url,
             "profile_url": self.profile_url,
             "name": self.name,
-            "list": self.list.to_dict(),
+            "list": self.filmlist.to_dict(),
             "watchtime": self.watchtime,
             "films_since_last_update": self.num_films_since_last_update,
         }
 
     def __repr__(self) -> str:
-        return f"Member(name={self.name},list={self.list})"
+        return f"Member(name={self.name},list={self.filmlist})"
 
     def __hash__(self) -> int:
-        return hash((self.profile_url, self.list))
+        return hash((self.profile_url, self.filmlist))
 
 
 class Contest:
@@ -381,7 +382,7 @@ class Contest:
                     name=member_conf["name"],
                     profile_url=member_conf["profile_url"],
                     contest_url=member_conf["contest_url"],
-                    list=FilmList(
+                    filmlist=FilmList(
                         url=member_conf["contest_url"],
                         films=set(
                             [
@@ -420,19 +421,19 @@ class Contest:
         for member in self.members:
             # create a copy of the member for comparison
             member_last = copy.deepcopy(member)
-            # set member list from their contest url
-            list_member_current = await FilmList.from_url(
+            # get member's news films using contest url and current list
+            new_films = await FilmList.from_url(
                 url=member_last.contest_url,
                 get_film_details=get_film_details,
-                current_list=member_last.list,
+                current_list=member_last.filmlist,
             )
-            if member.list != list_member_current:
-                member.list = list_member_current
-                print(f"Member '{member.name}' has seen a new film.")
+            if len(new_films) > 0:
+                # add new films to member's list
+                member.filmlist.films.update(new_films)
                 # if member is different than original, contest is changed
                 is_changed = True
                 # update films watched since last update
-            member.update_films(member_last.list.films)
+            member.update_films(member_last.filmlist.films)
 
         # sort members by number of films watched first and watchtime second
         self.members.sort(key=lambda x: (x.num_films_watched, x.watchtime), reverse=True)

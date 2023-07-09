@@ -12,19 +12,28 @@ from movie_bet_bot.models.movies import movies
 unittest.TestLoader.sortTestMethodsUsing = None
 
 member1 = movies.Member(
-    "name1",
-    "https://letterboxd.com/moviebetbot/list/test_list_1/detail/",
-    "profile_url1",
+    name="name1",
+    contest_url="https://letterboxd.com/moviebetbot/list/test_list_1/detail/",
+    profile_url="profile_url1",
+    filmlist=movies.FilmList(
+        url="https://letterboxd.com/moviebetbot/list/test_list_1/detail/", films=set()
+    ),
 )
 member2 = movies.Member(
-    "name2",
-    "https://letterboxd.com/moviebetbot/list/test_list_2/detail/",
-    "profile_url2",
+    name="name2",
+    contest_url="https://letterboxd.com/moviebetbot/list/test_list_2/detail/",
+    profile_url="profile_url2",
+    filmlist=movies.FilmList(
+        url="https://letterboxd.com/moviebetbot/list/test_list_2/detail/", films=set()
+    ),
 )
 
 test_c = movies.Contest(
     name="test",
-    members=[member1, member2],
+    members=[
+        member1,
+        member2,
+    ],
 )
 
 contest_dict: Final = {
@@ -46,7 +55,9 @@ class Test_Contest_AsyncIO(unittest.IsolatedAsyncioTestCase):
     async def test_run_contest(self):
         c = copy.deepcopy(test_c)
         assert c.members[0].name == "name1"
+        assert c.members[0].num_films_watched == 0
         assert c.members[1].name == "name2"
+        assert c.members[1].num_films_watched == 0
         await c.update(get_film_details=False, save_on_update=False)
         assert c.members[0].name == "name2"
         assert c.members[0].num_films_watched == 2
