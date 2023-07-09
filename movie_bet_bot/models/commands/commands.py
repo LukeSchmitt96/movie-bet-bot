@@ -1,6 +1,5 @@
 import discord
 
-from movie_bet_bot.models.logger.logger import print
 from movie_bet_bot.utils.images import html_to_image
 
 

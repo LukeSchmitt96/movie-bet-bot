@@ -10,7 +10,6 @@ import yaml
 from bs4 import BeautifulSoup
 
 import movie_bet_bot.utils.images as images
-from movie_bet_bot.models.logger import print
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.fetchers import fetch_page_body_from_url
 from movie_bet_bot.utils.utils import map_place
