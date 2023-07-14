@@ -59,7 +59,7 @@ def create_standings(bot):
             # update the standings if update_standings_first is true
             if update_standings_first:
                 print("Updating Standings")
-                update_standings_first = await bot.bot.contest.update()
+                update_standings_first = await bot.contest.update()
             # get the image of the standings
             (image_html, image_size) = bot.contest.to_image_html(
                 update_standings_first, show_hours_watched
@@ -72,10 +72,10 @@ def create_standings(bot):
                 # sends the file
                 print("Sending Standings File")
                 error = False
-                await interaction.response.send_message(file=file)
+                await interaction.followup.send(file=file)
         if error:
             print("Could not get standings")
-            await interaction.response.send_message("Could not get standings")
+            await interaction.followup.send("Could not get standings")
 
     # add a command to the list of commands
     bot.add_command(name, description)
