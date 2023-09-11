@@ -530,7 +530,6 @@ class Contest:
         # html str w/ all member's films watched since last update
         html_updates = ""
         for member in self.members:
-            print(f"Generating image component for member '{member.name}'.")
             (html_member, html_update) = images.build_html_update_block_from_member(
                 member=member,
                 show_last_update=show_last_update,
@@ -539,7 +538,6 @@ class Contest:
             html_members += html_member
             html_updates += html_update
             if member.num_films_since_last_update > 0 and show_last_update:
-                print(f"Member '{member.name}' has seen new films. Adding 175px to image height.")
                 # add 175px to height of image per member with film update
                 html_height += 175
         image_html = images.build_html_standings_block(
