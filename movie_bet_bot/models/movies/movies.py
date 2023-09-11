@@ -596,7 +596,6 @@ class Contest:
                     continue
                 other_films.update(other_member.filmlist.films)
             unique_films = member.filmlist.films.difference(other_films)
-            print(len(unique_films))
             html_member = images.build_html_unique_films_block_from_member(
                 member=member,
                 num_unique_films=len(unique_films),
