@@ -61,7 +61,7 @@ def create_standings(bot):
                 print("Updating Standings")
                 update_standings_first = await bot.contest.update()
             # get the image of the standings
-            (image_html, image_size) = bot.contest.to_image_html(
+            (image_html, image_size) = bot.contest.to_standings_image_html(
                 update_standings_first, show_hours_watched
             )
             # create a new discord.File from html_to_image-provided filepath
@@ -76,6 +76,47 @@ def create_standings(bot):
         if error:
             print("Could not get standings")
             await interaction.followup.send("Could not get standings")
+
+    # add a command to the list of commands
+    bot.add_command(name, description)
+
+
+def create_average_watchtimes(bot):
+    """
+    Create the average watchtime command.
+
+    :param bot: client.MovieBetBot to add average watchtime command to
+    """
+
+    # name of the average watchtime command
+    name = "avg_watchtime"
+
+    # description of the average watchtime command
+    description = "Get the average watchtimes."
+
+    @bot.command_tree.command(name=name, description=description)
+    async def average_watchtimes(
+        interaction: discord.Interaction,
+    ):
+        """Do average watchtime command callback"""
+        print("Running Average Watchtimes Command")
+        await interaction.response.defer()
+        error: bool = True
+        if bot.contest is not None:
+            # get the image of the average watchtimes
+            (image_html, image_size) = bot.contest.to_avg_watchtimes_image_html()
+            # create a new discord.File from html_to_image-provided filepath
+            file = discord.File(
+                html_to_image(html=image_html, out="avg_watchtimes.png", size=image_size)
+            )
+            if file is not None:
+                # sends the file
+                print("Sending Average Watchtimes File")
+                error = False
+                await interaction.followup.send(file=file)
+        if error:
+            print("Could not get average watchtimes")
+            await interaction.followup.send("Could not get average watchtimes")
 
     # add a command to the list of commands
     bot.add_command(name, description)

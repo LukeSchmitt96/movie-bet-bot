@@ -121,3 +121,35 @@ def build_html_standings_block(
         members_class=members_class,
         hr_class="films" if show_update else "hidden",
     )
+
+
+def build_html_avg_watchtimes_block(
+    members: str,
+):
+    return constants.HTML_STANDINGS_TEMPLATE.format(
+        head=constants.HTML_HEAD,
+        members=members,
+        updates="",
+        updates_head_class="hidden",
+        updates_head="",
+        updates_class="hidden",
+        title_class="hidden",
+        members_class="",
+        hr_class="hidden",
+        time="",
+    )
+
+
+def build_html_avg_watchtime_block_from_member(member: movies.Member) -> str:
+    # html str w/ current score, num of films watched since last update
+    html_member = ""
+    # format member section of standings template to add member
+    html_member += build_html_standings_member_block(
+        place=map_place(member.place),
+        name=member.name,
+        num_films_watched="",
+        hours_class="",
+        hours_watched=f"{member.watchtime / 60 / member.num_films_watched:.2f}hrs",
+        films_since_last_update="",
+    )
+    return html_member

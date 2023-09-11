@@ -507,11 +507,11 @@ class Contest:
         except OSError as e:
             print(f"Problem with database file at '{constants.DB_PATH}': ", e)
 
-    def to_image_html(
+    def to_standings_image_html(
         self, show_last_update: bool = True, show_watchtime: bool = False
     ) -> Tuple[str, Tuple[int, int]]:
         """
-        Create image from contest standings.
+        Create standings image from contest standings.
 
         :param show_last_update: if full update should be shown instead of just the standings
         :param show_watchtime: if member watchtime should be shown
@@ -545,3 +545,28 @@ class Contest:
             show_update=show_last_update,
         )
         return (image_html, (480, html_height + 40 if show_last_update else html_height))
+
+    def to_avg_watchtimes_image_html(self) -> Tuple[str, Tuple[int, int]]:
+
+        """
+        Create image from average watchtimes.
+
+        :return: tuple where the first element is a string containing the raw html used to generate
+            an image and the second element is a tuple containing the size of the image
+        """
+        print("Generating average watchtimes image of this contest.")
+        # height of created image
+        html_height = constants.IMAGE_BASE_HEIGHT
+        # html str w/ current scores, num of films watched since last update
+        html_members = ""
+        # html str w/ all member's films watched since last update
+        for member in self.members:
+            print(f"Generating image component for member '{member.name}'.")
+            html_member = images.build_html_avg_watchtime_block_from_member(
+                member=member,
+            )
+            html_members += html_member
+        image_html = images.build_html_avg_watchtimes_block(
+            members=html_members,
+        )
+        return (image_html, (480, html_height))

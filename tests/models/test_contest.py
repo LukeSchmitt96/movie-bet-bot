@@ -65,7 +65,7 @@ class Test_Contest_AsyncIO(unittest.IsolatedAsyncioTestCase):
         assert c.members[1].name == "name1"
         assert c.members[1].num_films_watched == 1
         assert c.members[1].num_films_since_last_update == 1
-        test_html, _ = c.to_image_html()
+        test_html, _ = c.to_standings_image_html()
         test_soup = BeautifulSoup(test_html, "html.parser")
         diff_spans = test_soup.find_all("span", {"class": "diff"})
         assert "(+2)" in diff_spans[0]

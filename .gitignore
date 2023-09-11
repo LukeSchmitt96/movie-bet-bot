@@ -1,6 +1,7 @@
 # Project-specific
 db.yaml
 update_image.png
+avg_watchtimes.png
 data/
 
 # Byte-compiled / optimized / DLL files

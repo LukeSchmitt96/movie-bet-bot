@@ -3,7 +3,7 @@ from typing import Any, List
 import discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from movie_bet_bot.models.commands import create_help, create_standings
+from movie_bet_bot.models.commands import create_average_watchtimes, create_help, create_standings
 from movie_bet_bot.models.movies import movies
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.images import html_to_image
@@ -48,7 +48,7 @@ class MovieBetBot(discord.Client):
             self.loop.create_task(self.task_setup())
         await self.sync_commands()
         # update standings on startup
-        await self.contest_message_task()
+        # await self.contest_message_task()
 
     async def send_message(self, msg: str = None, filepath: str = None) -> None:
         """
@@ -71,7 +71,7 @@ class MovieBetBot(discord.Client):
                 "Contest has had new change since last update. "
                 "Will generate update image and send message."
             )
-            (image_html, image_size) = self.contest.to_image_html()
+            (image_html, image_size) = self.contest.to_standings_image_html()
             print(f"Generated image with html length {len(image_html)} and size {image_size}.")
             await self.send_message(
                 filepath=html_to_image(html=image_html, out="update_image.png", size=image_size)
@@ -101,6 +101,8 @@ class MovieBetBot(discord.Client):
         create_help(self)
         # create standings command
         create_standings(self)
+        # create standings command
+        create_average_watchtimes(self)
 
     def add_command(self, name: str, description: str) -> None:
         """Add a command to the list of commands.
