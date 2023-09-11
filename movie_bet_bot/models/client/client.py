@@ -3,7 +3,12 @@ from typing import Any, List
 import discord
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from movie_bet_bot.models.commands import create_average_watchtimes, create_help, create_standings
+from movie_bet_bot.models.commands import (
+    create_average_watchtimes,
+    create_help,
+    create_standings,
+    create_unique_films,
+)
 from movie_bet_bot.models.movies import movies
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.images import html_to_image
@@ -103,6 +108,8 @@ class MovieBetBot(discord.Client):
         create_standings(self)
         # create standings command
         create_average_watchtimes(self)
+        # create unique films command
+        create_unique_films(self)
 
     def add_command(self, name: str, description: str) -> None:
         """Add a command to the list of commands.

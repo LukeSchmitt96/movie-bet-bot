@@ -561,7 +561,6 @@ class Contest:
         html_members = ""
         # html str w/ all member's films watched since last update
         for member in self.members:
-            print(f"Generating image component for member '{member.name}'.")
             html_member = images.build_html_avg_watchtime_block_from_member(
                 member=member,
             )
@@ -569,4 +568,35 @@ class Contest:
         image_html = images.build_html_avg_watchtimes_block(
             members=html_members,
         )
+        return (image_html, (480, html_height))
+
+    def to_unique_films_image_html(self) -> Tuple[str, Tuple[int, int]]:
+
+        """
+        Create image from unique films.
+
+        :return: tuple where the first element is a string containing the raw html used to generate
+            an image and the second element is a tuple containing the size of the image
+        """
+        print("Generating unique films image of this contest.")
+        # height of created image
+        html_height = constants.IMAGE_BASE_HEIGHT
+        # html str w/ current scores, num of films watched since last update
+        html_members = ""
+        # html str w/ all member's films watched since last update
+        for member in self.members:
+            unique_films = set()
+            other_films = set()
+            for other_member in self.members:
+                if member is other_member:
+                    continue
+                other_films.update(other_member.filmlist.films)
+            unique_films = member.filmlist.films.difference(other_films)
+            print(len(unique_films))
+            html_member = images.build_html_unique_films_block_from_member(
+                member=member,
+                num_unique_films=len(unique_films),
+            )
+            html_members += html_member
+        image_html = images.build_html_unique_films_block(members=html_members)
         return (image_html, (480, html_height))

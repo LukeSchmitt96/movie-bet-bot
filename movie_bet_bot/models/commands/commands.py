@@ -120,3 +120,44 @@ def create_average_watchtimes(bot):
 
     # add a command to the list of commands
     bot.add_command(name, description)
+
+
+def create_unique_films(bot):
+    """
+    Create the unique films command.
+
+    :param bot: client.MovieBetBot to add unique films command to
+    """
+
+    # name of the unique films command
+    name = "unique_films"
+
+    # description of the average watchtime command
+    description = "Get the number of unique films for each member."
+
+    @bot.command_tree.command(name=name, description=description)
+    async def unique_films(
+        interaction: discord.Interaction,
+    ):
+        """Do unique films command callback"""
+        print("Running Unique Films Command")
+        await interaction.response.defer()
+        error: bool = True
+        if bot.contest is not None:
+            # get the image of the unique films
+            (image_html, image_size) = bot.contest.to_unique_films_image_html()
+            # create a new discord.File from html_to_image-provided filepath
+            file = discord.File(
+                html_to_image(html=image_html, out="unique_films.png", size=image_size)
+            )
+            if file is not None:
+                # sends the file
+                print("Sending Unique Films File")
+                error = False
+                await interaction.followup.send(file=file)
+        if error:
+            print("Could not get unique films")
+            await interaction.followup.send("Could not get unique films")
+
+    # add a command to the list of commands
+    bot.add_command(name, description)
