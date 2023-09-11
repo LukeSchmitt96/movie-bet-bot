@@ -104,14 +104,14 @@ def build_html_standings_update_films_block(poster: str, rating: str) -> str:
 def build_html_standings_block(
     members: str,
     updates: str,
-    time: str,
+    title: str,
     title_class: str = "",
     members_class: str = "",
     show_update: bool = True,
 ):
     return constants.HTML_STANDINGS_TEMPLATE.format(
         head=constants.HTML_HEAD,
-        time=time,
+        title=title,
         members=members,
         updates=updates,
         updates_head_class="" if show_update else "hidden",
@@ -128,6 +128,7 @@ def build_html_avg_watchtimes_block(
 ):
     return constants.HTML_STANDINGS_TEMPLATE.format(
         head=constants.HTML_HEAD,
+        title="Average Watchtimes",
         members=members,
         updates="",
         updates_head_class="hidden",

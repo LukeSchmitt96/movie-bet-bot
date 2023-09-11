@@ -539,7 +539,7 @@ class Contest:
                 # add 175px to height of image per member with film update
                 html_height += 175
         image_html = images.build_html_standings_block(
-            time=self.time_last_update.strftime("%m/%d %H:%M"),
+            title=f"Standings as of {self.time_last_update.strftime('%m/%d %H:%M')}",
             members=html_members,
             updates=html_updates,
             show_update=show_last_update,
