@@ -407,6 +407,10 @@ class Contest:
             )
         return contests
 
+    def rank_members(self) -> None:
+        """Sort members by number of films watched first and watchtime second."""
+        self.members.sort(key=lambda x: (x.num_films_watched, x.watchtime), reverse=True)
+
     async def update(self, get_film_details: bool = True, save_on_update: bool = True) -> bool:
         """
         Update contest.
@@ -435,8 +439,7 @@ class Contest:
                 # update films watched since last update
             member.update_films(member_last.filmlist.films)
 
-        # sort members by number of films watched first and watchtime second
-        self.members.sort(key=lambda x: (x.num_films_watched, x.watchtime), reverse=True)
+        self.rank_members()
 
         if save_on_update and is_changed:
             self.save()
@@ -487,6 +490,7 @@ class Contest:
                     return
                 conf = Contest.from_config(saved_data["contests"], from_config=False)[0]
                 self.members = conf.members
+                self.rank_members()
             print("Loaded!")
         except OSError as e:
             print(f"Problem with database file at '{constants.DB_PATH}': ", e)
