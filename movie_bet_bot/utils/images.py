@@ -2,7 +2,6 @@ from typing import Tuple
 
 from html2image import Html2Image
 
-import movie_bet_bot.models.movies.movies as movies
 from movie_bet_bot.utils import constants
 from movie_bet_bot.utils.utils import map_place
 
@@ -29,7 +28,12 @@ def html_to_image(html: str, out: str = None, size: Tuple[int] = (480, 800)) -> 
 
 
 def build_html_update_block_from_member(
-    member: movies.Member,
+    num_films_since_last_update: int,
+    name: str,
+    place: int,
+    num_films_watched: int,
+    watchtime: int,
+    films_watched_since_last_update,
     show_last_update: bool = True,
     show_watchtime: bool = False,
 ):
@@ -41,31 +45,31 @@ def build_html_update_block_from_member(
     html_films = ""
     # set number of films watched since last update if >0 and if watchtime should be shown
     html_films_since_last_update = (
-        f"(+{member.num_films_since_last_update})"
-        if member.num_films_since_last_update > 0 and show_last_update
+        f"(+{num_films_since_last_update})"
+        if num_films_since_last_update > 0 and show_last_update
         else ""
     )
     # format member section of standings template to add member
     html_member += build_html_standings_member_block(
-        place=map_place(member.place),
-        name=member.name,
-        num_films_watched=member.num_films_watched,
+        place=map_place(place),
+        name=name,
+        num_films_watched=num_films_watched,
         hours_class="hidden" if not show_watchtime else "",
-        hours_watched=f"{member.watchtime / 60:.1f}hrs",
+        hours_watched=f"{watchtime / 60:.1f}hrs",
         films_since_last_update=html_films_since_last_update,
     )
     # skip adding member, films to update section if no films in this update
-    if member.num_films_since_last_update < 1 or not show_last_update:
+    if num_films_since_last_update < 1 or not show_last_update:
         return html_member, html_update
     # add films to update section's films
-    for film in member._films_since_last_update:
+    for film in films_watched_since_last_update:
         # format film update template to add films
         html_films += build_html_standings_update_films_block(
             poster=film.poster_url,
             rating=film.rating,
         )
     # add this member to update section of standings template
-    html_update += build_html_standings_update_block(name=member.name, films=html_films)
+    html_update += build_html_standings_update_block(name=name, films=html_films)
     return html_member, html_update
 
 
@@ -140,28 +144,33 @@ def build_html_avg_watchtimes_block(
     )
 
 
-def build_html_avg_watchtime_block_from_member(member: movies.Member) -> str:
+def build_html_avg_watchtime_block_from_member(
+    place: int,
+    name: str,
+    watchtime: int,
+    num_films_watched: int,
+) -> str:
     # html str w/ current score, num of films watched since last update
     html_member = ""
     # format member section of standings template to add member
     html_member += build_html_standings_member_block(
-        place=map_place(member.place),
-        name=member.name,
+        place=map_place(place),
+        name=name,
         num_films_watched="",
         hours_class="",
-        hours_watched=f"{member.watchtime / 60 / member.num_films_watched:.2f}hrs",
+        hours_watched=f"{watchtime / 60 / num_films_watched:.2f}hrs",
         films_since_last_update="",
     )
     return html_member
 
 
-def build_html_unique_films_block_from_member(member: movies.Member, num_unique_films: int) -> str:
+def build_html_unique_films_block_from_member(name: str, place: int, num_unique_films: int) -> str:
     # html str w/ current score, num of films watched since last update
     html_member = ""
     # format member section of standings template to add member
     html_member += build_html_standings_member_block(
-        place=map_place(member.place),
-        name=member.name,
+        place=map_place(place),
+        name=name,
         num_films_watched=num_unique_films,
         hours_class="",
         hours_watched="",

@@ -531,7 +531,12 @@ class Contest:
         html_updates = ""
         for member in self.members:
             (html_member, html_update) = images.build_html_update_block_from_member(
-                member=member,
+                num_films_since_last_update=member.num_films_since_last_update,
+                name=member.name,
+                place=member.place,
+                num_films_watched=member.num_films_watched,
+                watchtime=member.watchtime,
+                films_watched_since_last_update=member.films_watched_since_last_update,
                 show_last_update=show_last_update,
                 show_watchtime=show_watchtime,
             )
@@ -564,7 +569,10 @@ class Contest:
         # html str w/ all member's films watched since last update
         for member in self.members:
             html_member = images.build_html_avg_watchtime_block_from_member(
-                member=member,
+                member.place,
+                member.name,
+                member.watchtime,
+                member.num_films_watched,
             )
             html_members += html_member
         image_html = images.build_html_avg_watchtimes_block(
@@ -573,7 +581,6 @@ class Contest:
         return (image_html, (480, html_height))
 
     def to_unique_films_image_html(self) -> Tuple[str, Tuple[int, int]]:
-
         """
         Create image from unique films.
 
@@ -595,7 +602,8 @@ class Contest:
                 other_films.update(other_member.filmlist.films)
             unique_films = member.filmlist.films.difference(other_films)
             html_member = images.build_html_unique_films_block_from_member(
-                member=member,
+                name=member.name,
+                place=member.place,
                 num_unique_films=len(unique_films),
             )
             html_members += html_member
