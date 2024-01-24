@@ -8,6 +8,8 @@ from typing import Dict, List, Set, Tuple, Union
 import tmdbsimple as tmdb
 import yaml
 from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 import movie_bet_bot.utils.images as images
 from movie_bet_bot.utils import constants
@@ -609,3 +611,31 @@ class Contest:
             html_members += html_member
         image_html = images.build_html_unique_films_block(members=html_members)
         return (image_html, (480, html_height))
+
+    def to_timeline(self, filepath_out: str) -> None:
+        ts_min = time.time()
+        num_films_max = 0
+        fig, ax = plt.subplots()
+        # TODO: Don't hardcode date ranges
+        date_end_of_contest = datetime.strptime("12/31/2023", "%m/%d/%Y")
+        members = copy.deepcopy(self.members)
+        for member in members:
+            films = list(member.filmlist.films)
+            films_sorted = sorted(films, key=lambda film: film.timestamp)
+            films_enumerated = [(idx + 1, film.timestamp) for idx, film in enumerate(films_sorted)]
+            idx, timestamps = zip(*films_enumerated)
+            ts_min = min(timestamps) if min(timestamps) < ts_min else ts_min
+            num_films_max = max(idx) if max(idx) > num_films_max else num_films_max
+            timestamps_dt = [datetime.fromtimestamp(ts) for ts in timestamps]
+            timestamps_dt.append(date_end_of_contest)
+            idx = list(idx)
+            idx.append(max(idx))
+            ax.plot(timestamps_dt, idx, label=member.name)
+        ts_min_dt = datetime.fromtimestamp(ts_min)
+        ax.legend(loc="upper left", ncol=2)
+        ax.grid()
+        plt.ylim(0, num_films_max + 5)
+        plt.xlim(ts_min_dt, date_end_of_contest)
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%m/%d/%Y"))
+        plt.gcf().autofmt_xdate()
+        plt.savefig(filepath_out)
